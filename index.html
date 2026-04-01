@@ -344,6 +344,27 @@
     display:flex; z-index:200;
     box-shadow:0 -4px 20px rgba(26,110,181,0.1);
   }
+  .font-size-bar {
+    position:fixed; bottom:72px; right:12px; z-index:201;
+    display:flex; flex-direction:column; gap:4px;
+    background:white; border-radius:12px; padding:6px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.15); border:0.5px solid #e0e8f0;
+  }
+  .font-size-btn {
+    background:none; border:none; cursor:pointer; border-radius:8px;
+    padding:6px 10px; font-family:'Noto Sans KR',sans-serif;
+    font-weight:700; color:#3d5a73; line-height:1;
+  }
+  .font-size-btn.active { background:#1a6eb5; color:white; }
+  .font-size-btn:hover:not(.active) { background:#f0f5fb; }
+  body.font-large { font-size:18px; }
+  body.font-large .content p,
+  body.font-large .content span,
+  body.font-large .content div { font-size:1.15em !important; }
+  body.font-small { font-size:13px; }
+  body.font-small .content p,
+  body.font-small .content span,
+  body.font-small .content div { font-size:0.9em !important; }
   .tab-bar-item {
     flex:1; display:flex; flex-direction:column; align-items:center;
     padding:10px 0 14px; cursor:pointer; transition:all 0.2s;
@@ -394,63 +415,60 @@
 
       <!-- 환영 히어로 -->
       <div class="welcome-hero">
-        <h1 style="font-size:22px;font-weight:700;line-height:1.55;margin:0 0 10px;color:white;">양산제일병원에<br>오신 것을 환영합니다</h1>
-        <p style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.92);margin:0;line-height:1.6;">경험과 실력만큼이나<br>따뜻하고 설명 잘하는 병원</p>
+        <h1 style="font-size:24px;font-weight:800;line-height:1.4;margin:0 0 6px;color:white;">양산제일병원에<br>오신 것을 환영합니다</h1>
+        <p style="font-size:17px;font-weight:800;color:white;margin:0;line-height:1.4;">경험과 실력만큼이나 따뜻하고 설명 잘하는 병원</p>
       </div>
 
       <!-- 병원 안내 -->
-      <div style="font-size:11px;font-weight:700;color:#7a94b0;margin:4px 0 8px;letter-spacing:0.5px;">병원 안내</div>
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:4px 0 8px;letter-spacing:0.5px;">병원 안내</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
         <button onclick="showTab('about')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:20px;">🏥</span><span style="font-size:13px;font-weight:700;color:#1a6eb5;line-height:1.3;">병원소개</span>
+          <span style="font-size:16px;">🏥</span><span style="font-size:16px;font-weight:700;color:#1a6eb5;line-height:1.3;">병원소개</span>
         </button>
         <button onclick="window.open('https://yangsancheilhospital.com/001/sub01_07.php','_blank')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:20px;">👨‍⚕️</span><span style="font-size:13px;font-weight:700;color:#1a6eb5;line-height:1.3;">의료진소개</span>
+          <span style="font-size:16px;">👨‍⚕️</span><span style="font-size:16px;font-weight:700;color:#1a6eb5;line-height:1.3;">의료진소개</span>
         </button>
       </div>
       <!-- 진료 정보 -->
-      <div style="font-size:11px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">진료 정보</div>
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">진료 정보</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
         <button onclick="showTab('schedule')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">📅</span><span style="font-size:12px;font-weight:600;color:#3d5a73;line-height:1.4;">이달의<br>진료표</span>
+          <span style="font-size:14px;">📅</span><span style="font-size:15px;font-weight:700;color:#3d5a73;line-height:1.4;">이달의<br>진료표</span>
         </button>
         <button onclick="showTab('meal')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">🍱</span><span style="font-size:12px;font-weight:600;color:#3d5a73;line-height:1.4;">입원<br>식단표</span>
+          <span style="font-size:14px;">🍱</span><span style="font-size:15px;font-weight:700;color:#3d5a73;line-height:1.4;">입원<br>식단표</span>
         </button>
         <button onclick="openMap()" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">📍</span><span style="font-size:12px;font-weight:600;color:#3d5a73;line-height:1.4;">찾아<br>오는길</span>
+          <span style="font-size:14px;">📍</span><span style="font-size:15px;font-weight:700;color:#3d5a73;line-height:1.4;">찾아<br>오는길</span>
         </button>
       </div>
       <!-- 서비스 & 소식 -->
-      <div style="font-size:11px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">서비스 & 소식</div>
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">서비스 & 소식</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-        <button onclick="showTab('smart')" style="background:#FAE100;border:none;border-radius:14px;padding:16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:20px;">⭐</span><span style="font-size:13px;font-weight:800;color:#3C1E1E;line-height:1.3;">스마트<br>서비스</span>
+        <button onclick="showTab('smart')" style="background:linear-gradient(135deg,#4a9fd4,#2e86c1);border:none;border-radius:14px;padding:16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+          <span style="font-size:16px;">⭐</span><span style="font-size:15px;font-weight:800;color:white;line-height:1.3;">스마트<br>서비스</span>
         </button>
         <button onclick="showTab('news')" style="background:linear-gradient(135deg,#fff8f0,#fef0e0);border:1.5px solid #f5c842;border-radius:14px;padding:16px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:20px;">📢</span><span style="font-size:13px;font-weight:700;color:#854f0b;line-height:1.3;">병원<br>소식</span>
+          <span style="font-size:14px;">📢</span><span style="font-size:15px;font-weight:700;color:#854f0b;line-height:1.3;">병원<br>소식</span>
         </button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
         <button onclick="showTab('faq')" style="background:linear-gradient(135deg,#f0eefe,#e5e0fc);border:1.5px solid #afa9ec;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">❓</span><span style="font-size:12px;font-weight:700;color:#3c3489;line-height:1.4;">자주묻는<br>질문</span>
+          <span style="font-size:14px;">❓</span><span style="font-size:14px;font-weight:700;color:#3c3489;line-height:1.4;">자주묻는<br>질문</span>
         </button>
         <button onclick="showTab('certificate')" style="background:linear-gradient(135deg,#e1f5ee,#c5eede);border:1.5px solid #5dcaa5;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">📋</span><span style="font-size:12px;font-weight:700;color:#0f6e56;line-height:1.4;">증명서<br>발급안내</span>
+          <span style="font-size:14px;">📋</span><span style="font-size:14px;font-weight:700;color:#0f6e56;line-height:1.4;">증명서<br>발급안내</span>
         </button>
         <button onclick="showTab('press')" style="background:linear-gradient(135deg,#f1efe8,#e0ddd6);border:1.5px solid #b4b2a9;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          <span style="font-size:18px;">📰</span><span style="font-size:12px;font-weight:700;color:#444441;line-height:1.4;">언론<br>보도</span>
+          <span style="font-size:14px;">📰</span><span style="font-size:14px;font-weight:700;color:#444441;line-height:1.4;">언론<br>보도</span>
         </button>
       </div>
 
-      <!-- 설문 안내 + 버튼 -->
-      <div class="info-card" style="margin-bottom:12px;">
-        <h3>📋 설문 안내</h3>
-        <p style="font-size:14px;color:var(--gray-700);line-height:1.8;">약 1분 소요됩니다.<br>소중한 의견은 더 나은 서비스 개선에 활용됩니다.</p>
-      </div>
+      <!-- 설문 안내 + 버튼 통합 -->
       <div style="padding:0 0 16px">
-        <button class="btn-primary" onclick="startSurvey()">
-          <span>📋 고객의 소리 및 설문 시작하기</span> <span>→</span>
+        <button class="btn-primary" onclick="startSurvey()" style="flex-direction:column;height:auto;padding:16px;gap:6px;">
+          <span style="font-size:16px;font-weight:800;">📋 고객의 소리 및 설문 시작하기 →</span>
+          <span style="font-size:12px;font-weight:400;opacity:0.85;">약 1분 소요됩니다 · 소중한 의견은 더 나은 서비스 개선에 활용됩니다</span>
         </button>
         <div style="display:flex;gap:8px;margin-top:10px;">
           <button class="btn-secondary" style="margin:0" onclick="showTab('contact')">📞 부서 직통 전화</button>
@@ -755,10 +773,10 @@
         <h3 style="margin-bottom:8px;color:#854f0b;">⚠️ 발급 시 필요 서류</h3>
         <p style="font-size:14px;color:var(--gray-700);line-height:1.8;">본인 신분증 (주민등록증, 운전면허증)<br>대리인 발급 시: 위임장 + 본인·대리인 신분증</p>
       </div>
-      <div style="background:#1a6eb5;border-radius:14px;padding:14px;text-align:center;margin-bottom:16px;">
-        <div style="font-size:13px;font-weight:700;color:white;">문의: 원무팀</div>
-        <div style="font-size:18px;font-weight:800;color:#FAE100;margin-top:4px;">055-904-7575</div>
-      </div>
+      <a href="tel:0559122015" style="display:block;background:#1a6eb5;border-radius:14px;padding:16px;text-align:center;margin-bottom:16px;text-decoration:none;">
+        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">문의: 원무팀(제증명) · 누르면 전화 연결</div>
+        <div style="font-size:20px;font-weight:800;color:#FAE100;margin-top:6px;">📞 055-912-2015</div>
+      </a>
       <button class="btn-secondary" onclick="history.back()" style="margin:0;">← 뒤로가기</button>
     </div>
   </div>
@@ -1318,6 +1336,27 @@ function showTab(tab) {
   }
 }
 
+function setFontSize(size) {
+  document.body.classList.remove('font-small','font-large');
+  document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
+  if(size === 'large') {
+    document.body.classList.add('font-large');
+    document.getElementById('fs-large').classList.add('active');
+  } else if(size === 'small') {
+    document.body.classList.add('font-small');
+    document.getElementById('fs-small').classList.add('active');
+  } else {
+    document.getElementById('fs-normal').classList.add('active');
+  }
+  localStorage.setItem('fontSize', size);
+}
+
+// 저장된 글자 크기 복원
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('fontSize');
+  if(saved) setFontSize(saved);
+});
+
 function toggleFaq(btn) {
   const answer = btn.nextElementSibling;
   const icon = btn.querySelector('span:last-child');
@@ -1802,6 +1841,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
+
+<div class="font-size-bar">
+  <button class="font-size-btn" onclick="setFontSize('small')" id="fs-small">가<span style="font-size:9px;">-</span></button>
+  <button class="font-size-btn active" onclick="setFontSize('normal')" id="fs-normal">가</button>
+  <button class="font-size-btn" onclick="setFontSize('large')" id="fs-large">가<span style="font-size:11px;">+</span></button>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
