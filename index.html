@@ -535,57 +535,79 @@
       <div class="header-title">⭐ 스마트서비스</div>
     </div>
     <div class="content no-tabbar">
-      <div style="background:linear-gradient(135deg,#1a6eb5,#0f4f8a);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;">
-        <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:6px;">양산제일병원 편의 서비스</div>
-        <h2 style="font-size:20px;font-weight:800;color:white;">더 빠르고 편리하게<br>이용하세요!</h2>
+
+      <!-- 헤더 배너 -->
+      <div style="background:linear-gradient(135deg,#1a6eb5,#0f4f8a);border-radius:16px;padding:18px 20px;margin-bottom:14px;text-align:center;">
+        <div style="font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:6px;">양산제일병원 편의 서비스</div>
+        <div style="font-size:20px;font-weight:800;color:white;line-height:1.4;">더 빠르고 편리하게<br>이용하세요!</div>
       </div>
-      <!-- 카카오톡 -->
-      <div style="background:#FAE100;border-radius:16px;padding:18px;margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-          <div style="background:#3C1E1E;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💬</div>
-          <div>
-            <div style="font-size:16px;font-weight:800;color:#3C1E1E;">카카오톡 예약접수</div>
-            <div style="font-size:12px;color:#5a3a00;">당일 예약 후 내원하세요</div>
+
+      <!-- 좌우 2칸 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+
+        <!-- 카카오톡 예약 (좌) -->
+        <div style="background:#FAE100;border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#3C1E1E;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💬</div>
+            <div>
+              <div style="font-size:13px;font-weight:800;color:#3C1E1E;line-height:1.3;">카카오톡<br>예약접수</div>
+              <div style="font-size:10px;color:#5a3a00;">당일 예약 후 내원</div>
+            </div>
           </div>
-        </div>
-        <div style="background:rgba(60,30,30,0.1);border-radius:10px;padding:12px;margin-bottom:10px;">
-          <p style="font-size:13px;color:#3C1E1E;line-height:1.8;">카카오톡에서 <strong>"양산제일병원"</strong> 검색 후<br>당일 예약접수 → 내원하시면<br>대기시간을 줄이실 수 있습니다<br><span style="color:#854f0b;font-weight:600;">(당일 예약만 가능 · 재진 환자)</span></p>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div style="background:rgba(60,30,30,0.1);border-radius:10px;padding:10px;text-align:center;">
-            <div style="font-size:11px;font-weight:700;color:#3C1E1E;">✅ 재진 환자</div>
-            <div style="font-size:11px;color:#5a3a00;margin-top:2px;">당일 예약 가능</div>
+          <div style="background:rgba(60,30,30,0.1);border-radius:10px;padding:10px;font-size:11px;color:#3C1E1E;line-height:1.8;">
+            카카오톡에서<br><strong>"양산제일병원"</strong><br>검색 후 당일<br>예약접수 → 내원<br>
+            <span style="color:#854f0b;font-weight:700;">(당일예약만 가능<br>재진 환자)</span>
           </div>
-          <div style="background:rgba(60,30,30,0.1);border-radius:10px;padding:10px;text-align:center;">
-            <div style="font-size:11px;font-weight:700;color:#3C1E1E;">⚠️ 신규·초진</div>
-            <div style="font-size:11px;color:#5a3a00;margin-top:2px;">원무팀 방문접수</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="background:rgba(60,30,30,0.12);border-radius:8px;padding:7px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;color:#3C1E1E;">✅ 재진 환자</div>
+              <div style="font-size:10px;color:#5a3a00;">당일 예약 가능</div>
+            </div>
+            <div style="background:rgba(60,30,30,0.12);border-radius:8px;padding:7px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;color:#3C1E1E;">⚠️ 신규·초진</div>
+              <div style="font-size:10px;color:#5a3a00;">원무팀 방문접수</div>
+            </div>
           </div>
+          <a href="tel:05590475750" style="display:block;background:#3C1E1E;border-radius:10px;padding:10px;text-align:center;text-decoration:none;">
+            <div style="font-size:11px;font-weight:700;color:#FAE100;">📞 055-904-7575+0</div>
+          </a>
         </div>
-        <div style="background:#3C1E1E;border-radius:10px;padding:10px;margin-top:10px;text-align:center;">
-          <div style="font-size:12px;font-weight:700;color:#FAE100;">📞 전화문의: 055-904-7575+0</div>
+
+        <!-- 하이패스 수납 (우) -->
+        <div style="background:#e8f2fc;border:1.5px solid #b5d4f4;border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="background:#1a6eb5;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💳</div>
+            <div>
+              <div style="font-size:13px;font-weight:800;color:#0c447c;line-height:1.3;">하이패스<br>빠른수납</div>
+              <div style="font-size:10px;color:#185fa5;">대기없이 자동결제</div>
+            </div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px;font-size:11px;color:#0c447c;line-height:1.8;">
+            최초 1회 원무팀<br>등록 후 수납창구<br>방문 없이<br>자동으로 결제<br>
+            <span style="color:#e8941a;font-weight:700;">시간단축·편리!</span>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:10px;color:#0c447c;line-height:1.7;">
+              <span style="background:#1a6eb5;color:white;border-radius:6px;padding:1px 5px;font-size:9px;font-weight:700;">신청</span><br>
+              원무팀 안내데스크
+            </div>
+            <div style="font-size:10px;color:#0c447c;line-height:1.7;">
+              <span style="background:#1a6eb5;color:white;border-radius:6px;padding:1px 5px;font-size:9px;font-weight:700;">준비물</span><br>
+              신용/체크카드<br>+ 신분증<br>
+              <span style="color:#e74c3c;font-size:9px;">법인카드 불가</span>
+            </div>
+            <div style="font-size:10px;color:#0c447c;line-height:1.7;">
+              <span style="background:#e8941a;color:white;border-radius:6px;padding:1px 5px;font-size:9px;font-weight:700;">유의</span><br>
+              서류필요시<br>원무팀 방문
+            </div>
+          </div>
+          <a href="tel:0559047575" style="display:block;background:#1a6eb5;border-radius:10px;padding:10px;text-align:center;text-decoration:none;">
+            <div style="font-size:11px;font-weight:700;color:white;">📞 055-904-7575</div>
+          </a>
         </div>
+
       </div>
-      <!-- 하이패스 -->
-      <div style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:16px;padding:18px;margin-bottom:16px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-          <div style="background:#1a6eb5;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💳</div>
-          <div>
-            <div style="font-size:16px;font-weight:800;color:#0c447c;">하이패스 빠른수납</div>
-            <div style="font-size:12px;color:#185fa5;">대기 없이 자동결제</div>
-          </div>
-        </div>
-        <p style="font-size:13px;color:#0c447c;line-height:1.8;margin-bottom:10px;">최초 1회 원무팀 등록 후 수납창구<br>방문 없이 자동으로 결제됩니다</p>
-        <div style="background:white;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;gap:10px;align-items:center;">
-            <span style="background:#1a6eb5;color:white;border-radius:8px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">신청</span>
-            <span style="font-size:13px;color:#0c447c;">원무팀 안내데스크<br><strong>055-904-7575</strong></span>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <span style="background:#1a6eb5;color:white;border-radius:8px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">준비물</span>
-            <span style="font-size:13px;color:#0c447c;">신용/체크카드 + 신분증<br><span style="color:#e74c3c;font-size:12px;">법인카드 불가</span></span>
-          </div>
-        </div>
-      </div>
+
       <button class="btn-secondary" onclick="history.back()" style="margin:0;">← 뒤로가기</button>
     </div>
   </div>
