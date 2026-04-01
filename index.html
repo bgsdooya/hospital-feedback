@@ -1351,6 +1351,10 @@ function submitSurvey() {
 
   feedbacks.unshift(fb);
   localStorage.setItem('ycFeedbacks', JSON.stringify(feedbacks));
+  // Firestore에도 저장
+  if(window.saveFeedbackToFirestore) {
+    window.saveFeedbackToFirestore(fb);
+  }
   showScreen('complete');
 }
 
@@ -1434,6 +1438,21 @@ function setFilter(f, btn) {
 }
 
 function renderDashboard() {
+  // Firestore에서 실시간 로드
+  if(window.loadFeedbacksFromFirestore) {
+    window.loadFeedbacksFromFirestore(function(data) {
+      if(data.length > 0) {
+        feedbacks = data;
+        localStorage.setItem('ycFeedbacks', JSON.stringify(feedbacks));
+      }
+      _renderDashboardUI();
+    });
+  } else {
+    _renderDashboardUI();
+  }
+}
+
+function _renderDashboardUI() {
   const today = new Date().toDateString();
   const todayFbs = feedbacks.filter(f => new Date(f.time).toDateString() === today);
   const scores = feedbacks.filter(f => f.overall > 0).map(f => f.overall);
@@ -1518,6 +1537,10 @@ function sendReply(id) {
     fb.replied = true;
     fb.reply = val;
     localStorage.setItem('ycFeedbacks', JSON.stringify(feedbacks));
+    // Firestore에도 저장
+    if(fb.firestoreId && window.saveReplyToFirestore) {
+      window.saveReplyToFirestore(fb.firestoreId, val);
+    }
     renderDashboard();
   }
 }
@@ -1547,6 +1570,74 @@ document.addEventListener('DOMContentLoaded', () => {
   renderContacts();
 });
 
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBbp8igRmTQycYNI9BBf9L5dJjkxBRhKVk",
+  authDomain: "yangsan-cheil.firebaseapp.com",
+  projectId: "yangsan-cheil",
+  storageBucket: "yangsan-cheil.firebasestorage.app",
+  messagingSenderId: "663066989776",
+  appId: "1:663066989776:web:8b027cd2c9b9874dc4fad5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 피드백 저장 (Firestore)
+window.saveFeedbackToFirestore = async function(fb) {
+  try {
+    await addDoc(collection(db, "feedbacks"), fb);
+    console.log("Firestore 저장 완료");
+  } catch(e) {
+    console.error("Firestore 저장 실패:", e);
+  }
+};
+
+// 피드백 불러오기 (실시간)
+window.loadFeedbacksFromFirestore = function(callback) {
+  const q = query(collection(db, "feedbacks"), orderBy("time", "desc"));
+  onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(doc => ({ ...doc.data(), firestoreId: doc.id }));
+    callback(data);
+  });
+};
+
+// 답변 저장
+window.saveReplyToFirestore = async function(firestoreId, reply) {
+  try {
+    await updateDoc(doc(db, "feedbacks", firestoreId), { replied: true, reply: reply });
+    console.log("답변 저장 완료");
+  } catch(e) {
+    console.error("답변 저장 실패:", e);
+  }
+};
+
+// 병원소식 저장
+window.saveNewsToFirestore = async function(news) {
+  try {
+    await addDoc(collection(db, "news"), news);
+    return true;
+  } catch(e) {
+    console.error("소식 저장 실패:", e);
+    return false;
+  }
+};
+
+// 병원소식 불러오기
+window.loadNewsFromFirestore = function(callback) {
+  const q = query(collection(db, "news"), orderBy("time", "desc"));
+  onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(doc => ({ ...doc.data(), firestoreId: doc.id }));
+    callback(data);
+  });
+};
+
+console.log("Firebase 초기화 완료");
 </script>
 </body>
 </html>
