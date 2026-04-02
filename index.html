@@ -419,7 +419,7 @@
       <!-- 환영 히어로 -->
       <div class="welcome-hero">
         <h1 style="font-size:24px;font-weight:800;line-height:1.4;margin:0 0 6px;color:white;">양산제일병원에<br>오신 것을 환영합니다</h1>
-        <p style="font-size:17px;font-weight:800;color:white;margin:0;line-height:1.4;">경험과 실력만큼이나 따뜻하고 설명 잘하는 병원</p>
+        <p style="font-size:15px;font-weight:800;color:white;margin:0;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">경험과 실력만큼이나 따뜻하고 설명 잘하는 병원</p>
       </div>
 
       <!-- 🏥 병원 안내 -->
@@ -1279,6 +1279,7 @@ const STEPS = [
     q: '오늘 방문에서 좋았던 점이 있으셨나요?',
     sub: '해당하는 항목을 모두 선택해주세요',
     multi: true,
+    optional: true,
     choices: [
       { icon:'👨‍⚕️', label:'친절한 직원이 있었어요' },
       { icon:'⚡', label:'대기시간이 짧았어요' },
@@ -1302,6 +1303,7 @@ const STEPS = [
     num: '2단계 · 안내 만족도',
     q: '안내가 충분했나요?',
     sub: '진료 절차, 대기 안내 등 전반적인 안내를 평가해주세요',
+    optional: true,
   },
   {
     id: 'comfort',
@@ -1310,15 +1312,23 @@ const STEPS = [
     q: '불편하셨던 점이 있으셨나요?',
     sub: '해당하는 항목을 모두 선택해주세요 (없으면 없음 선택)',
     multi: true,
+    optional: true,
     choices: [
       { icon:'⏰', label:'대기 시간이 너무 길었어요' },
       { icon:'😟', label:'응대가 아쉬웠어요' },
       { icon:'🔇', label:'설명이 부족했어요' },
       { icon:'🧹', label:'위생 상태가 아쉬웠어요' },
       { icon:'🚗', label:'주차가 불편했어요' },
-      { icon:'📅', label:'예약 시스템이 불편했어요' },
       { icon:'✅', label:'불편사항 없음' },
     ]
+  },
+  {
+    id: 'comfort_text',
+    type: 'text',
+    num: '3-1단계 · 불편사항 상세',
+    q: '불편하셨던 내용을 직접 적어주세요',
+    sub: '구체적으로 적어주시면 개선에 큰 도움이 됩니다 (선택)',
+    optional: true,
   },
   {
     id: 'overall',
@@ -1326,6 +1336,7 @@ const STEPS = [
     num: '4단계 · 전반적 만족도',
     q: '전반적인 만족도는 어떠셨나요?',
     sub: '오늘 방문 전체를 평가해주세요',
+    optional: true,
   },
   {
     id: 'respondent',
@@ -1343,7 +1354,7 @@ const STEPS = [
     sub: '칭찬, 건의, 개선사항 무엇이든 좋습니다 (선택)',
     optional: true,
   }
-];
+]
 
 let currentStep = 0;
 let answers = {};
@@ -1902,7 +1913,7 @@ function selectChoice(id, val, multi) {
 
 function nextStep() {
   const s = STEPS[currentStep];
-  if(s.type === 'text') answers[s.id] = document.getElementById('free-text').value;
+  if(s.type === 'text') { var ta = document.getElementById('free-text'); if(ta) answers[s.id] = ta.value; }
   if(s.type === 'kind_staff') {
     answers.kind_staff = {
       dept: document.getElementById('ks-dept')?.value || '',
@@ -1925,8 +1936,14 @@ function nextStep() {
   }
   currentStep++;
   // 친절직원 칭찬 단계: '친절한 직원이 있었어요' 선택 안 했으면 스킵
-  if(STEPS[currentStep] && STEPS[currentStep].id === 'kind_staff' && answers.positive !== '친절한 직원이 있었어요') {
-    currentStep++;
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'kind_staff') {
+    var posArr = answers.positive || [];
+    if(!posArr.includes('친절한 직원이 있었어요')) currentStep++;
+  }
+  // 불편사항 없음 선택 시 comfort_text 스킵
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'comfort_text') {
+    var comArr = answers.comfort || [];
+    if(comArr.includes('불편사항 없음') || comArr.length === 0) currentStep++;
   }
   renderStep();
   window.scrollTo(0,0);
@@ -1943,13 +1960,17 @@ function prevStep() {
 function skipStep() {
   if(currentStep >= STEPS.length - 1) { submitSurvey(); return; }
   currentStep++;
+  // 건너뛴 후에도 자동 스킵 적용
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'kind_staff') currentStep++;
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'comfort_text') currentStep++;
+  if(currentStep >= STEPS.length) { submitSurvey(); return; }
   renderStep();
   window.scrollTo(0,0);
 }
 
 function submitSurvey() {
   const s = STEPS[currentStep];
-  if(s.type === 'text') answers[s.id] = document.getElementById('free-text').value;
+  if(s.type === 'text') { var ta = document.getElementById('free-text'); if(ta) answers[s.id] = ta.value; }
 
   if(STEPS[currentStep].type === 'kind_staff') {
     answers.kind_staff = { dept: document.getElementById('ks-dept')?.value||'', name: document.getElementById('ks-name')?.value||'' };
