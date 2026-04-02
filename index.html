@@ -401,7 +401,55 @@
   .empty-state .empty-icon { font-size:48px; margin-bottom:12px; }
   .empty-state p { font-size:14px; }
 
+  /* 이미지 전체화면 뷰어 */
+  .img-viewer-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.95); z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    touch-action:pinch-zoom;
+  }
+  .img-viewer-overlay img {
+    max-width:100%; max-height:100vh;
+    object-fit:contain; touch-action:pinch-zoom;
+  }
+  .img-viewer-close {
+    position:absolute; top:16px; right:16px;
+    background:rgba(255,255,255,0.2); border:none; border-radius:50%;
+    width:40px; height:40px; font-size:20px; color:white;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .zoomable-img {
+    cursor:zoom-in; width:100%; display:block;
+  }
+
   .divider { height:1px; background:var(--gray-200); margin:16px 0; }
+
+  /* 이미지 전체화면 뷰어 */
+  .img-viewer-overlay {
+    display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.95); z-index:9999;
+    align-items:center; justify-content:center;
+    touch-action:pinch-zoom;
+  }
+  .img-viewer-overlay.active { display:flex; }
+  .img-viewer-overlay img {
+    max-width:100%; max-height:100vh;
+    object-fit:contain; touch-action:pinch-zoom;
+    transition:transform 0.1s;
+  }
+  .img-viewer-close {
+    position:fixed; top:16px; right:16px;
+    background:rgba(255,255,255,0.2); color:white;
+    border:none; border-radius:50%; width:40px; height:40px;
+    font-size:20px; cursor:pointer; z-index:10000;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .zoomable { cursor:zoom-in; }
+
+  .img-viewer-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom}
+  .img-viewer-overlay img{max-width:100%;max-height:100vh;object-fit:contain;touch-action:pinch-zoom}
+  .img-viewer-close{position:fixed;top:16px;right:16px;background:rgba(255,255,255,.25);border:none;border-radius:50%;width:44px;height:44px;font-size:22px;color:white;cursor:pointer;z-index:10000}
+  .zoomable-img{cursor:zoom-in;width:100%;display:block}
 </style>
 </head>
 <body>
@@ -1298,17 +1346,9 @@ const STEPS = [
     optional: true,
   },
   {
-    id: 'info_score',
-    type: 'star',
-    num: '2단계 · 안내 만족도',
-    q: '안내가 충분했나요?',
-    sub: '진료 절차, 대기 안내 등 전반적인 안내를 평가해주세요',
-    optional: true,
-  },
-  {
     id: 'comfort',
     type: 'choice',
-    num: '3단계 · 불편 사항',
+    num: '2단계 · 불편 사항',
     q: '불편하셨던 점이 있으셨나요?',
     sub: '해당하는 항목을 모두 선택해주세요 (없으면 없음 선택)',
     multi: true,
@@ -1325,7 +1365,7 @@ const STEPS = [
   {
     id: 'comfort_text',
     type: 'text',
-    num: '3-1단계 · 불편사항 상세',
+    num: '2-1단계 · 불편사항 상세',
     q: '불편하셨던 내용을 직접 적어주세요',
     sub: '구체적으로 적어주시면 개선에 큰 도움이 됩니다 (선택)',
     optional: true,
@@ -1333,7 +1373,7 @@ const STEPS = [
   {
     id: 'overall',
     type: 'star',
-    num: '4단계 · 전반적 만족도',
+    num: '3단계 · 전반적 만족도',
     q: '전반적인 만족도는 어떠셨나요?',
     sub: '오늘 방문 전체를 평가해주세요',
     optional: true,
@@ -1341,7 +1381,7 @@ const STEPS = [
   {
     id: 'respondent',
     type: 'respondent',
-    num: '5단계 · 설문자 정보',
+    num: '4단계 · 설문자 정보',
     q: '성함과 연락처를 남겨주세요',
     sub: '추후 안내 및 감사 연락을 드릴 수 있습니다 (선택)',
     optional: true,
@@ -1349,7 +1389,7 @@ const STEPS = [
   {
     id: 'free',
     type: 'text',
-    num: '6단계 · 자유의견',
+    num: '5단계 · 자유의견',
     q: '추가로 전하고 싶은 말씀이 있으신가요?',
     sub: '칭찬, 건의, 개선사항 무엇이든 좋습니다 (선택)',
     optional: true,
@@ -1575,6 +1615,45 @@ function deleteItem(col, id) {
   }
 }
 
+function openViewer(src) {
+  document.getElementById('viewer-img').src = src;
+  document.getElementById('img-viewer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+  document.getElementById('img-viewer').classList.remove('active');
+  document.getElementById('viewer-img').src = '';
+  document.body.style.overflow = '';
+}
+
+function openImgViewer(src) {
+  var overlay = document.createElement('div');
+  overlay.className = 'img-viewer-overlay';
+  overlay.innerHTML = '<button class="img-viewer-close" onclick="this.parentNode.remove()">✕</button>' +
+    '<img src="' + src + '" alt="이미지">';
+  overlay.addEventListener('click', function(e) {
+    if(e.target === overlay) overlay.remove();
+  });
+  document.body.appendChild(overlay);
+}
+
+function openImgViewer(src) {
+  var ov = document.createElement('div');
+  ov.className = 'img-viewer-overlay';
+  var btn = document.createElement('button');
+  btn.className = 'img-viewer-close';
+  btn.textContent = '✕';
+  btn.onclick = function(){ ov.remove(); };
+  var img = document.createElement('img');
+  img.src = src;
+  img.alt = '이미지';
+  ov.appendChild(btn);
+  ov.appendChild(img);
+  ov.addEventListener('click', function(e){ if(e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+}
+
 function setFontSize(size) {
   document.body.classList.remove('font-small','font-large');
   document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
@@ -1594,6 +1673,14 @@ function setFontSize(size) {
 document.addEventListener('DOMContentLoaded', function() {
   const saved = localStorage.getItem('fontSize');
   if(saved) setFontSize(saved);
+
+  // 병원소개 이미지 클릭 시 뷰어 열기
+  document.querySelectorAll('#screen-about img, #screen-schedule img, #screen-meal img').forEach(function(img) {
+    if(img.src && img.src.startsWith('data:image')) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function() { openViewer(this.src); });
+    }
+  });
 });
 
 function toggleFaq(btn) {
@@ -1625,7 +1712,7 @@ function renderSchedule() {
         el.innerHTML = filtered.map(d =>
           '<div style="background:white;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;">' +
           '<div style="background:#1a6eb5;padding:10px 16px;font-size:14px;font-weight:700;color:white;">📅 ' + d.title + '</div>' +
-          (d.imageUrl ? '<img src="'+d.imageUrl+'" style="width:100%;display:block;" alt="진료표">' : '') +
+          (d.imageUrl ? '<img src="'+d.imageUrl+'" style="width:100%;display:block;cursor:zoom-in;" onclick="openViewer(this.src)" alt="진료표">' : '') +
           (d.note ? '<div style="padding:10px 16px;font-size:12px;color:#7a94b0;">※ '+d.note+'</div>' : '') +
           '</div>'
         ).join('');
@@ -1661,7 +1748,7 @@ function renderMealFirebase() {
           return '<div style="background:white;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;">' +
             '<div style="background:#e8941a;padding:10px 16px;font-size:14px;font-weight:700;color:white;">🍱 ' + d.title + '</div>' +
             (d.imageUrl ?
-              '<img src="'+d.imageUrl+'" style="width:100%;display:block;" alt="식단표">' :
+              '<img src="'+d.imageUrl+'" style="width:100%;display:block;cursor:zoom-in;" alt="식단표" onclick="openViewer(this.src)">' :
               days.map(day =>
                 '<div style="border-bottom:1px solid #f0f5fb;">' +
                 '<div style="background:#fff8f0;padding:8px 16px;font-size:13px;font-weight:700;color:#e8941a;">' + day.date + '</div>' +
@@ -2199,19 +2286,17 @@ document.addEventListener('DOMContentLoaded', () => {
   renderContacts();
 });
 
+
+function openImgViewer(s){var o=document.createElement('div');o.className='img-viewer-overlay';var b=document.createElement('button');b.className='img-viewer-close';b.textContent='✕';b.onclick=function(){o.remove()};var i=document.createElement('img');i.src=s;o.appendChild(b);o.appendChild(i);o.addEventListener('click',function(e){if(e.target===o)o.remove()});document.body.appendChild(o)}
 </script>
 
-<div class="font-size-bar">
-  <button class="font-size-btn" onclick="setFontSize('small')" id="fs-small">가<span style="font-size:9px;">-</span></button>
-  <button class="font-size-btn active" onclick="setFontSize('normal')" id="fs-normal">가</button>
-  <button class="font-size-btn" onclick="setFontSize('large')" id="fs-large">가<span style="font-size:11px;">+</span></button>
-</div>
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-const firebaseConfig = {
+const firebaseConfig= {
   apiKey: "AIzaSyBbp8igRmTQycYNI9BBf9L5dJjkxBRhKVk",
   authDomain: "yangsan-cheil.firebaseapp.com",
   projectId: "yangsan-cheil",
@@ -2332,6 +2417,7 @@ window.deleteFromFirestore = async function(collectionName, firestoreId) {
 };
 
 console.log("Firebase 초기화 완료");
+
 </script>
 </body>
 </html>
