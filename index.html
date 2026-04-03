@@ -752,31 +752,173 @@
   ══════════════════════════════════ -->
   <div id="screen-certificate" class="screen">
     <div class="content no-tabbar">
+
+      <!-- 의무기록 사본 안내 -->
       <div class="info-card" style="margin-bottom:12px;">
-        <h3 style="margin-bottom:10px;">📋 발급 가능한 증명서</h3>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-          <div style="background:#e8f2fc;border-radius:10px;padding:12px;">
-            <div style="font-size:14px;font-weight:700;color:#0c447c;margin-bottom:4px;">진단서</div>
-            <div style="font-size:13px;color:#185fa5;line-height:1.7;">담당 의사 확인 후 발급<br>발급비: 1부당 10,000원~20,000원</div>
+        <h3 style="margin-bottom:6px;text-align:center;font-size:16px;">[ 의무기록 사본발급안내 ]</h3>
+        <p style="font-size:12px;color:var(--gray-500);line-height:1.8;text-align:center;margin-bottom:0;">환자의 의무기록은 의료법에 의거하여 환자 동의없이 타인이 열람하거나 사본 발급을 받을 수 없으며, 해당되는 구비서류를 갖추어야 합니다.</p>
+      </div>
+
+      <!-- 환자동의 가능한 경우 -->
+      <div class="info-card" style="margin-bottom:12px;">
+        <h3 style="margin-bottom:10px;font-size:14px;">◎ 환자동의가 가능한 경우 (만 14세 이상)</h3>
+        <p style="font-size:11px;color:var(--gray-500);margin-bottom:8px;">· 만14세~17세 미만 주민등록미발급자: 신분증(여권,학생증) 또는 가족관계증명서 및 주민등록초본</p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:420px;">
+            <thead>
+              <tr style="background:#e8f2fc;">
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;" colspan="2">사본발급 신청자</th>
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">신청자신분증</th>
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">환자신분증사본</th>
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">가족관계증빙서류</th>
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">동의서</th>
+                <th style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">위임장</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;vertical-align:middle;" rowspan="3">환자동의가<br>가능한 경우<br>(만 14세 이상)</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">환자본인</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">환자의 친족<br><span style="font-size:10px;">(배우자,직계존비속,<br>배우자의 직계존속)</span></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">환자가 지정하는<br>대리인</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;vertical-align:middle;" rowspan="2">환자가 미성년자인<br>경우 (만 14세 미만)</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">친족(직계존속)</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">법정대리인<br><span style="font-size:10px;">(친권자, 후견인)</span></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">친권자-가족관계증명서류<br>후견인-법원결정문</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;"></td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">친족 또는 법정대리인이<br>지정하는 대리인</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;">○</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">친권자 신분증</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">친권자-가족관계증명서류<br>후견인-법원결정문</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">○<br>(법정대리인 작성)</td>
+                <td style="padding:8px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">○<br>(법정대리인 작성)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 환자동의 불가한 경우 -->
+      <div class="info-card" style="margin-bottom:12px;">
+        <h3 style="margin-bottom:6px;font-size:14px;">◎ 환자의 동의를 받을 수 없는 경우</h3>
+        <p style="font-size:11px;color:var(--gray-500);margin-bottom:8px;">환자친족(배우자,직계비존속,배우자의 직계존속)만 신청가능</p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:480px;">
+            <thead>
+              <tr style="background:#e8f2fc;">
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">구분</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">사망환자</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">의식불명</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">행방불명</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">구치소수감</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">군인</th>
+                <th style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;color:#0c447c;">의사무능력자</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">관련서류</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">사망진단서</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">의식불명 판단진단서</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">법원의 실종선고 결정문</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">수감증명서</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">병적증명서</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;font-size:10px;">법원의 금치산선고 결정문 or 의사무능력임을 증명하는 정신과 전문의 진단서</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;">공통서류</td>
+                <td style="padding:7px 4px;border:1px solid #d1dce8;text-align:center;font-size:11px;" colspan="6">신청자 신분증, 가족관계 증명서류</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 발급순서 -->
+      <div class="info-card" style="margin-bottom:12px;">
+        <h3 style="margin-bottom:10px;font-size:14px;">◎ 발급순서</h3>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:12px;font-weight:700;color:white;background:#3d5a73;border-radius:6px;padding:6px 10px;display:inline-block;margin-bottom:8px;">외래</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <div style="background:#e8f2fc;border-radius:8px;padding:8px 12px;font-size:12px;text-align:center;color:#185fa5;">접수<br><span style="font-size:10px;">(원무과)</span></div>
+            <span style="color:#7a94b0;">›</span>
+            <div style="background:#e8f2fc;border-radius:8px;padding:8px 12px;font-size:12px;text-align:center;color:#185fa5;">의사확인 및 신청<br><span style="font-size:10px;">(외래해당 진료과)</span></div>
+            <span style="color:#7a94b0;">›</span>
+            <div style="background:#e8f2fc;border-radius:8px;padding:8px 12px;font-size:12px;text-align:center;color:#185fa5;">사본발급/비용수납<br><span style="font-size:10px;">(원무과)</span></div>
           </div>
-          <div style="background:#e8f2fc;border-radius:10px;padding:12px;">
-            <div style="font-size:14px;font-weight:700;color:#0c447c;margin-bottom:4px;">소견서 (진료확인서)</div>
-            <div style="font-size:13px;color:#185fa5;line-height:1.7;">담당 의사 확인 후 발급<br>발급비: 1부당 3,000원~10,000원</div>
-          </div>
-          <div style="background:#e8f2fc;border-radius:10px;padding:12px;">
-            <div style="font-size:14px;font-weight:700;color:#0c447c;margin-bottom:4px;">입·퇴원 확인서</div>
-            <div style="font-size:13px;color:#185fa5;line-height:1.7;">원무팀에서 즉시 발급<br>발급비: 1부당 1,000원~3,000원</div>
-          </div>
-          <div style="background:#e8f2fc;border-radius:10px;padding:12px;">
-            <div style="font-size:14px;font-weight:700;color:#0c447c;margin-bottom:4px;">진료기록 사본</div>
-            <div style="font-size:13px;color:#185fa5;line-height:1.7;">신청 후 3~5일 소요<br>발급비: 장당 1,000원</div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:white;background:#3d5a73;border-radius:6px;padding:6px 10px;display:inline-block;margin-bottom:8px;">입원</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <div style="background:#e8f2fc;border-radius:8px;padding:8px 12px;font-size:12px;text-align:center;color:#185fa5;">담당의사 신청/<br>신청서 작성<br><span style="font-size:10px;">(병동/병실)</span></div>
+            <span style="color:#7a94b0;">›</span>
+            <div style="background:#e8f2fc;border-radius:8px;padding:8px 12px;font-size:12px;text-align:center;color:#185fa5;">사본발급/비용수납<br><span style="font-size:10px;">(원무과)</span></div>
           </div>
         </div>
       </div>
-      <div class="info-card" style="margin-bottom:16px;border-left:4px solid #e8941a;">
-        <h3 style="margin-bottom:8px;color:#854f0b;">⚠️ 발급 시 필요 서류</h3>
-        <p style="font-size:14px;color:var(--gray-700);line-height:1.8;">본인 신분증 (주민등록증, 운전면허증)<br>대리인 발급 시: 위임장 + 본인·대리인 신분증</p>
+
+      <!-- 유의사항 -->
+      <div class="info-card" style="margin-bottom:12px;border-left:4px solid #e8941a;">
+        <h3 style="margin-bottom:8px;color:#854f0b;font-size:14px;">⚠️ 유의사항</h3>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <p style="font-size:12px;color:var(--gray-700);line-height:1.7;">1. 신분증 또는 신분증 사본은 주민등록번호 및 사진이 있는 것이어야 함. (※ 국가에서 발급한 신분증)</p>
+          <p style="font-size:12px;color:var(--gray-700);line-height:1.7;">2. 친족관계증명서는 환자-신청자간의 관계가 반드시 명시되어야 함.</p>
+          <p style="font-size:12px;color:var(--gray-700);line-height:1.7;">3. 건강보험증은 친족관계를 입증할 수 없는 서류이므로 인정되지 않음.</p>
+          <p style="font-size:12px;color:var(--gray-700);line-height:1.7;">4. 환자-신청자간의 관계가 변동될 수 있으므로 의무기록 사본발급일 기준으로 3개월 이내에 발급 받은 것만 인정함.</p>
+          <p style="font-size:12px;color:var(--gray-700);line-height:1.7;">5. 동의서에는 사본발급 받는 범위(진료일, 기록지범위)등을 구체적으로 명시해야 함.</p>
+        </div>
       </div>
+
+      <!-- 서류양식 다운로드 -->
+      <div class="info-card" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:10px;font-size:14px;">📥 서류양식 다운로드</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <a href="https://yangsancheilhospital.com/file/동의서양식.hwp" download style="display:block;background:#1a6eb5;border-radius:10px;padding:12px;text-align:center;text-decoration:none;">
+            <div style="font-size:13px;font-weight:700;color:white;">동의서양식</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:2px;">한글파일 ⬇</div>
+          </a>
+          <a href="https://yangsancheilhospital.com/file/위임장양식.hwp" download style="display:block;background:#1a6eb5;border-radius:10px;padding:12px;text-align:center;text-decoration:none;">
+            <div style="font-size:13px;font-weight:700;color:white;">위임장양식</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-top:2px;">한글파일 ⬇</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 문의 전화 -->
       <a href="tel:0559122015" style="display:block;background:#1a6eb5;border-radius:14px;padding:16px;text-align:center;margin-bottom:16px;text-decoration:none;">
         <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.85);">문의: 원무팀(제증명) · 누르면 전화 연결</div>
         <div style="font-size:20px;font-weight:800;color:#FAE100;margin-top:6px;">📞 055-912-2015</div>
