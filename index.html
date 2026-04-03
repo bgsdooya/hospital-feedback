@@ -1061,13 +1061,13 @@
       </div>
       <div class="tab-group" id="contact-tabs">
         <button class="tab-btn active" onclick="setContactTab('전체',this)">전체</button>
-        <button class="tab-btn" onclick="setContactTab('2층',this)">2층</button>
-        <button class="tab-btn" onclick="setContactTab('3층',this)">3층</button>
-        <button class="tab-btn" onclick="setContactTab('4층',this)">4층</button>
-        <button class="tab-btn" onclick="setContactTab('5층',this)">5층</button>
-        <button class="tab-btn" onclick="setContactTab('6층',this)">6층</button>
-        <button class="tab-btn" onclick="setContactTab('7층',this)">7층</button>
-        <button class="tab-btn" onclick="setContactTab('8층',this)">8층</button>
+        <button class="tab-btn" onclick="setContactTab('8F',this)">8F</button>
+        <button class="tab-btn" onclick="setContactTab('7F',this)">7F</button>
+        <button class="tab-btn" onclick="setContactTab('6F',this)">6F</button>
+        <button class="tab-btn" onclick="setContactTab('5F',this)">5F</button>
+        <button class="tab-btn" onclick="setContactTab('4F',this)">4F</button>
+        <button class="tab-btn" onclick="setContactTab('3F',this)">3F</button>
+        <button class="tab-btn" onclick="setContactTab('2F',this)">2F</button>
       </div>
       <div class="contact-list" id="contact-list"></div>
     </div>
@@ -1238,35 +1238,48 @@
 // 데이터
 // ══════════════════════════════════
 const CONTACTS = [
-  { dept:'1재활외래', doc:'최수원', spec:'재활의학과 전문의', num:'055-912-2011', cat:'외래', floor:'4층'},
-  { dept:'2재활외래', doc:'김민태', spec:'재활의학과 전문의', num:'055-912-2077', cat:'외래', floor:'4층'},
-  { dept:'신경외과외래', doc:'박권병', spec:'신경외과 전문의', num:'055-912-2013', cat:'외래', floor:'4층'},
-  { dept:'정형외과외래', doc:'김종호', spec:'정형외과 전문의', num:'055-912-2058', cat:'외래', floor:'4층'},
-  { dept:'1내과외래', doc:'조영환', spec:'내과 전문의', num:'055-912-2062', cat:'외래', floor:'4층'},
-  { dept:'2내과외래', doc:'장원준', spec:'내과 전문의', num:'055-912-2059', cat:'외래', floor:'4층'},
-  { dept:'3내과외래', doc:'최병진', spec:'내과 전문의', num:'055-912-2064', cat:'외래', floor:'4층'},
-  { dept:'7내과외래', doc:'김승현', spec:'내과 전문의', num:'055-912-2179', cat:'외래', floor:'4층'},
-  { dept:'류마티스내과외래', doc:'김윤정', spec:'류마티스내과 전문의', num:'055-912-0286', cat:'외래', floor:'2층'},
-  { dept:'운동치료실', num:'055-912-2160', cat:'치료', floor:'5층'},
-  { dept:'작업치료실', num:'055-912-2164', cat:'치료', floor:'5층'},
-  { dept:'물리치료실', num:'055-912-2159', cat:'치료', floor:'5층'},
-  { dept:'도수치료실', num:'055-912-2157', cat:'치료', floor:'3층'},
-  { dept:'소아치료실', num:'055-912-2503', cat:'치료', floor:'5층'},
-  { dept:'5병동(간호·간병통합병동)', num:'055-912-2048', cat:'병동', floor:'5층'},
-  { dept:'6병동', num:'055-912-2169', cat:'병동', floor:'6층'},
-  { dept:'7병동', num:'055-912-2175', cat:'병동', floor:'7층'},
-  { dept:'진료협력팀', num:'055-912-2007', cat:'기타', floor:'4층'},
-  { dept:'원무과(접수수납)', num:'055-912-2025', num2:'055-912-2024', cat:'기타', floor:'4층'},
-  { dept:'진단검사팀', num:'055-912-2055', cat:'기타', floor:'4층'},
-  { dept:'영상의학팀', num:'055-912-2019', cat:'기타', floor:'4층'},
-  { dept:'건강검진센터', num:'055-912-0287', cat:'기타', floor:'2층'},
-  { dept:'내시경실', num:'055-912-2085', cat:'기타', floor:'2층'},
-  { dept:'홍보본부장실', num:'055-912-0097', cat:'기타', floor:'2층'},
-  { dept:'감염관리실', num:'055-912-0139', cat:'기타', floor:'2층'},
-  { dept:'총무팀', num:'055-912-2184', cat:'기타', floor:'8층'},
-  { dept:'주사실', num:'055-912-2086', cat:'기타', floor:'4층'},
-  { dept:'약제팀', num:'055-912-2177', cat:'기타', floor:'7층'},
-  { dept:'영양팀', num:'055-912-2196', cat:'기타', floor:'8층'},
+  // ── 8F ──
+  { dept:'영양팀', num:'055-912-2196', floor:'8F' },
+  { dept:'총무팀', num:'055-912-2184', floor:'8F' },
+  { dept:'중앙공급실', floor:'8F' },
+  { dept:'병원장실', floor:'8F' },
+  { dept:'행정부원장실', floor:'8F' },
+  // ── 7F ──
+  { dept:'제7병동(701~721)', num:'055-912-2175', floor:'7F' },
+  { dept:'약제팀', num:'055-912-2177', floor:'7F' },
+  // ── 6F ──
+  { dept:'제6병동(601~618)', num:'055-912-2169', floor:'6F' },
+  // ── 5F ──
+  { dept:'제5병동(501~508)', num:'055-912-2048', floor:'5F' },
+  { dept:'물리치료실', num:'055-912-2159', floor:'5F' },
+  { dept:'운동치료실', num:'055-912-2160', floor:'5F' },
+  { dept:'작업치료실', num:'055-912-2164', floor:'5F' },
+  { dept:'소아치료실', num:'055-912-2503', floor:'5F' },
+  // ── 4F ──
+  { dept:'1재활외래', spec:'재활의학과 전문의', doc:'최수원', num:'055-912-2011', floor:'4F' },
+  { dept:'2재활외래', spec:'재활의학과 전문의', doc:'김민태', num:'055-912-2077', floor:'4F' },
+  { dept:'신경외과외래', spec:'신경외과 전문의', doc:'박권병', num:'055-912-2013', floor:'4F' },
+  { dept:'정형외과외래', spec:'정형외과 전문의', doc:'김종호', num:'055-912-2058', floor:'4F' },
+  { dept:'1내과외래', spec:'내과 전문의', doc:'조영환', num:'055-912-2062', floor:'4F' },
+  { dept:'2내과외래', spec:'내과 전문의', doc:'장원준', num:'055-912-2059', floor:'4F' },
+  { dept:'3내과외래', spec:'내과 전문의', doc:'최병진', num:'055-912-2064', floor:'4F' },
+  { dept:'7내과외래', spec:'내과 전문의', doc:'김승현', num:'055-912-2179', floor:'4F' },
+  { dept:'원무과', num:'055-912-2025', num2:'055-912-2024', floor:'4F' },
+  { dept:'진료협력팀(상담실)', num:'055-912-2007', floor:'4F' },
+  { dept:'영상의학팀(X-RAY·CT·MRI)', num:'055-912-2019', floor:'4F' },
+  { dept:'진단검사팀(채혈실)', num:'055-912-2055', floor:'4F' },
+  { dept:'주사실', num:'055-912-2086', floor:'4F' },
+  { dept:'사회복지사실', floor:'4F' },
+  // ── 3F ──
+  { dept:'도수치료실', num:'055-912-2157', floor:'3F' },
+  // ── 2F ──
+  { dept:'건강검진센터', num:'055-912-0287', floor:'2F' },
+  { dept:'류마티스내과외래', spec:'류마티스내과 전문의', doc:'김윤정', num:'055-912-0286', floor:'2F' },
+  { dept:'내시경실', num:'055-912-2085', floor:'2F' },
+  { dept:'홍보본부장실', num:'055-912-0097', floor:'2F' },
+  { dept:'감염관리실', num:'055-912-0139', floor:'2F' },
+  { dept:'초음파실', floor:'2F' },
+  { dept:'유방촬영실', floor:'2F' },
 ];
 
 // 피드백 저장소 (브라우저 localStorage 활용)
@@ -2116,17 +2129,56 @@ function submitSurvey() {
 // ══════════════════════════════════
 // 연락처
 // ══════════════════════════════════
-function renderContacts() {
-  const q = (document.getElementById('contact-search')?.value || '').trim().toLowerCase();
-  const tab = currentContactTab;
+const FLOOR_ORDER = ['8F','7F','6F','5F','4F','3F','2F'];
+const FLOOR_DESC = {
+  '8F': '행정 · 관리',
+  '7F': '7병동 · 약제팀',
+  '6F': '6병동',
+  '5F': '5병동 · 재활치료',
+  '4F': '외래진료 · 원무 · 검사',
+  '3F': '도수치료실',
+  '2F': '건강검진센터',
+};
 
-  const list = CONTACTS.filter(c => {
-    const matchTab = tab === '전체' || c.cat === tab;
-    const matchQ = !q || c.dept.toLowerCase().includes(q) || c.num.includes(q);
+function makeContactItem(c) {
+  var numClean = function(n){ return n.replace(/-/g,'').replace(/\./g,''); };
+  return '<div class="contact-item">' +
+    '<div class="contact-info">' +
+    '<div class="dept">' + c.dept + '</div>' +
+    (c.doc ? '<div style="font-size:13px;color:var(--accent);margin-top:2px;font-weight:600">' + (c.spec ? c.spec + ' ' : '') + c.doc + '</div>' : '') +
+    (c.num ? '<div class="num">' + c.num + (c.num2 ? ' · ' + c.num2 : '') + '</div>' : '<div class="num" style="color:var(--gray-500);font-size:12px;">직통번호 없음</div>') +
+    '</div>' +
+    (c.num ?
+      (c.num2 ?
+        '<div style="display:flex;flex-direction:column;gap:6px;">' +
+        '<a class="call-btn" href="tel:' + numClean(c.num) + '" style="text-decoration:none;padding:7px 14px;font-size:12px;">📞 ' + c.num + '</a>' +
+        '<a class="call-btn" href="tel:' + numClean(c.num2) + '" style="text-decoration:none;padding:7px 14px;font-size:12px;">📞 ' + c.num2 + '</a>' +
+        '</div>'
+        :
+        '<a class="call-btn" href="tel:' + numClean(c.num) + '" style="text-decoration:none;">📞 전화</a>'
+      ) : '<div style="width:72px;"></div>'
+    ) +
+    '</div>';
+}
+
+function floorHeader(floor) {
+  return '<div style="display:flex;align-items:center;gap:8px;padding:14px 4px 6px;">' +
+    '<div style="background:var(--primary);color:white;font-size:12px;font-weight:700;border-radius:8px;padding:4px 12px;min-width:36px;text-align:center;">' + floor + '</div>' +
+    '<span style="font-size:12px;color:var(--gray-500);">' + (FLOOR_DESC[floor]||'') + '</span>' +
+    '</div>';
+}
+
+function renderContacts() {
+  var q = (document.getElementById('contact-search')?.value || '').trim().toLowerCase();
+  var tab = currentContactTab;
+
+  var list = CONTACTS.filter(function(c) {
+    var matchTab = (tab === '전체') ? true : (c.floor === tab);
+    var matchQ = !q || c.dept.toLowerCase().includes(q) || (c.num && c.num.includes(q)) || (c.doc && c.doc.includes(q));
     return matchTab && matchQ;
   });
 
-  const el = document.getElementById('contact-list');
+  var el = document.getElementById('contact-list');
   if(!el) return;
 
   if(list.length === 0) {
@@ -2134,23 +2186,23 @@ function renderContacts() {
     return;
   }
 
-  el.innerHTML = list.map(c =>
-    '<div class="contact-item">' +
-    '<div class="contact-info">' +
-    '<div class="dept">' + c.dept + '</div>' +
-    (c.doc ? '<div style="font-size:13px;color:var(--accent);margin-top:2px;font-weight:600">' + (c.spec ? c.spec + ' ' : '') + c.doc + '</div>' : (c.spec ? '<div style="font-size:13px;color:var(--accent);margin-top:2px;font-weight:600">' + c.spec + '</div>' : '')) +
-    '<div class="num">' + c.num + (c.num2 ? '<br>' + c.num2 : '') + '</div>' +
-    '</div>' +
-    (c.num2 ?
-      '<div style="display:flex;flex-direction:column;gap:6px;">' +
-      '<a class="call-btn" href="tel:' + c.num.replace(/-/g,'').replace(/\./g,'') + '" style="text-decoration:none;padding:7px 14px;font-size:12px;">📞 ' + c.num + '</a>' +
-      '<a class="call-btn" href="tel:' + c.num2.replace(/-/g,'').replace(/\./g,'') + '" style="text-decoration:none;padding:7px 14px;font-size:12px;">📞 ' + c.num2 + '</a>' +
-      '</div>'
-      :
-      '<a class="call-btn" href="tel:' + c.num.replace(/-/g,'').replace(/\./g,'') + '" style="text-decoration:none;">📞 전화</a>'
-    ) +
-    '</div>'
-  ).join('');
+  var out = '';
+  if(tab === '전체') {
+    // 층별 그룹핑
+    var grouped = {};
+    FLOOR_ORDER.forEach(function(f){ grouped[f] = []; });
+    list.forEach(function(c){ if(grouped[c.floor]) grouped[c.floor].push(c); });
+    FLOOR_ORDER.forEach(function(f) {
+      if(!grouped[f] || grouped[f].length === 0) return;
+      out += floorHeader(f);
+      grouped[f].forEach(function(c){ out += makeContactItem(c); });
+    });
+  } else {
+    // 단일 층
+    out += floorHeader(tab);
+    list.forEach(function(c){ out += makeContactItem(c); });
+  }
+  el.innerHTML = out;
 }
 
 function setContactTab(tab, btn) {
