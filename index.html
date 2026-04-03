@@ -1635,9 +1635,27 @@ function openImgViewer(src) {
   }, {passive:false});
 
   ov.addEventListener('touchend', function(e){ if(e.touches.length<2){startX=undefined;} });
-  ov.addEventListener('click', function(e){ if(e.target===ov && scale<=1) ov.remove(); });
+  ov.addEventListener('click', function(e){ if(e.target===ov && scale<=1) closeImgViewer(ov); });
+
+  // 뒤로가기로 뷰어 닫기
+  history.pushState({imgViewer: true}, '');
+  function onPopState(e) {
+    closeImgViewer(ov);
+    window.removeEventListener('popstate', onPopState);
+  }
+  window.addEventListener('popstate', onPopState);
+
+  btn.onclick = function(){
+    window.removeEventListener('popstate', onPopState);
+    history.back();
+    ov.remove();
+  };
 
   document.body.appendChild(ov);
+}
+
+function closeImgViewer(ov) {
+  if(ov && ov.parentNode) ov.remove();
 }
 
 
@@ -2028,8 +2046,15 @@ function nextStep() {
 
 function prevStep() {
   currentStep--;
-  if(STEPS[currentStep] && STEPS[currentStep].id === 'kind_staff' && answers.positive !== '친절한 직원이 있었어요') {
-    currentStep--;
+  // comfort_text 스킵: 불편사항 없음 선택했으면 건너뜀
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'comfort_text') {
+    var comArr = answers.comfort || [];
+    if(comArr.includes('불편사항 없음') || comArr.length === 0) currentStep--;
+  }
+  // kind_staff 스킵: 친절한 직원 선택 안 했으면 건너뜀
+  if(STEPS[currentStep] && STEPS[currentStep].id === 'kind_staff') {
+    var posArr = answers.positive || [];
+    if(!posArr.includes('친절한 직원이 있었어요')) currentStep--;
   }
   renderStep();
   window.scrollTo(0,0);
