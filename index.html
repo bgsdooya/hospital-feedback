@@ -367,7 +367,9 @@
   body.font-large { font-size:18px; }
   body.font-large .content p,
   body.font-large .content span,
-  body.font-large .content div { font-size:1.15em !important; }
+  body.font-large .content div,
+  body.font-large td, body.font-large .dept,
+  body.font-large .num { font-size:1.2em !important; }
   body.font-small { font-size:13px; }
   body.font-small .content p,
   body.font-small .content span,
@@ -1686,15 +1688,12 @@ function setFontSize(size) {
   document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
   if(size === 'large') {
     document.body.classList.add('font-large');
-    const el = document.getElementById('fs-large');
-    if(el) el.classList.add('active');
+    document.querySelectorAll('#fs-large').forEach(el => el.classList.add('active'));
   } else if(size === 'small') {
     document.body.classList.add('font-small');
-    const el = document.getElementById('fs-small');
-    if(el) el.classList.add('active');
+    document.querySelectorAll('#fs-small').forEach(el => el.classList.add('active'));
   } else {
-    const el = document.getElementById('fs-normal');
-    if(el) el.classList.add('active');
+    document.querySelectorAll('#fs-normal').forEach(el => el.classList.add('active'));
   }
   localStorage.setItem('fontSize', size);
 }
@@ -2144,10 +2143,16 @@ const FLOOR_DESC = {
   '2F': '건강검진센터',
 };
 
-function floorHeader(floor) {
+function floorHeader(floor, showFontBtn) {
+  var fontBtns = showFontBtn ?
+    '<div style="display:flex;gap:4px;margin-left:auto;">' +
+    '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:12px;padding:3px 8px;">가</button>' +
+    '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:15px;padding:3px 8px;">가+</button>' +
+    '</div>' : '';
   return '<div style="display:flex;align-items:center;gap:8px;padding:14px 4px 6px;">' +
     '<div style="background:var(--primary);color:white;font-size:12px;font-weight:700;border-radius:8px;padding:4px 12px;min-width:36px;text-align:center;">' + floor + '</div>' +
     '<span style="font-size:12px;color:var(--gray-500);">' + (FLOOR_DESC[floor]||'') + '</span>' +
+    fontBtns +
     '</div>';
 }
 
@@ -2228,16 +2233,23 @@ function renderContacts() {
     list.forEach(function(c){ if(grouped[c.floor]) grouped[c.floor].push(c); });
     // 전화 있는 항목 전체를 하나의 table로
     out += '<table style="width:100%;border-collapse:collapse;table-layout:fixed;">' + COLGROUP;
+    var isFirst = true;
     FLOOR_ORDER.forEach(function(f) {
       if(!grouped[f] || grouped[f].length === 0) return;
       var withNum = grouped[f].filter(function(c){ return !!c.num; });
       var noNum   = grouped[f].filter(function(c){ return !c.num; });
       if(withNum.length) {
-        // 층 헤더를 table 안 행으로
+        var fontBtns = isFirst ?
+          '<div style="display:flex;gap:4px;margin-left:auto;">' +
+          '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:12px;padding:3px 8px;">가</button>' +
+          '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:15px;padding:3px 8px;">가+</button>' +
+          '</div>' : '';
+        isFirst = false;
         out += '<tr><td colspan="3" style="padding:12px 8px 4px;border-bottom:0.5px solid var(--gray-200);">' +
           '<div style="display:flex;align-items:center;gap:8px;">' +
           '<div style="background:var(--primary);color:white;font-size:11px;font-weight:700;border-radius:6px;padding:3px 10px;">' + f + '</div>' +
           '<span style="font-size:11px;color:var(--gray-500);">' + (FLOOR_DESC[f]||'') + '</span>' +
+          fontBtns +
           '</div></td></tr>';
         withNum.forEach(function(c){ out += makeContactItem(c); });
       }
@@ -2247,7 +2259,7 @@ function renderContacts() {
     });
     out += '</table>';
   } else {
-    out += floorHeader(tab);
+    out += floorHeader(tab, true);
     var withNum = list.filter(function(c){ return !!c.num; });
     var noNum   = list.filter(function(c){ return !c.num; });
     if(withNum.length) {
