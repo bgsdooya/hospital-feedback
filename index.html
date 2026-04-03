@@ -1683,6 +1683,27 @@ function closeImgViewer(ov) {
 }
 
 
+function toggleKindReason(btn, val) {
+  if(!answers.kind_staff) answers.kind_staff = {};
+  if(!Array.isArray(answers.kind_staff.kindReasons)) answers.kind_staff.kindReasons = [];
+  var arr = answers.kind_staff.kindReasons;
+  var idx = arr.indexOf(val);
+  var isNowSel = idx === -1;
+  if(isNowSel) arr.push(val);
+  else arr.splice(idx, 1);
+  // 버튼 스타일 토글
+  btn.style.borderColor = isNowSel ? 'var(--primary)' : '#e9eef5';
+  btn.style.background  = isNowSel ? '#e8f2fc' : '#f8fafc';
+  var spans = btn.querySelectorAll('span');
+  spans[0].textContent = isNowSel ? '✔' : '○';
+  spans[0].style.color = isNowSel ? 'var(--primary)' : '#ccc';
+  spans[spans.length-1].style.fontWeight = isNowSel ? '600' : '400';
+  spans[spans.length-1].style.color = isNowSel ? 'var(--primary)' : '#3d5a73';
+  // 직접입력 토글
+  var wrap = document.getElementById('ks-custom-wrap');
+  if(wrap) wrap.style.display = arr.includes('__custom__') ? 'block' : 'none';
+}
+
 function setFontSize(size) {
   document.body.classList.remove('font-small','font-large');
   document.querySelectorAll('.font-size-btn').forEach(b => b.classList.remove('active'));
@@ -1971,11 +1992,39 @@ function renderStep() {
     const ks = answers.kind_staff || {};
     const inputStyle = "width:100%;border:2px solid #e9eef5;border-radius:12px;padding:13px 14px;font-size:15px;outline:none;background:#f8fafc;box-sizing:border-box;font-family:inherit;";
     const labelStyle = "font-size:13px;font-weight:500;color:#3d5a73;display:block;margin-bottom:6px;";
+    const kindOptions = [
+      { icon:'😊', label:'친절하고 빠른 응대' },
+      { icon:'📋', label:'친절하고 자세한 설명' },
+      { icon:'🤝', label:'남다른 배려심' },
+      { icon:'💪', label:'믿음직한 전문성' },
+      { icon:'💛', label:'따뜻한 위로와 공감' },
+    ];
+    const selKinds = Array.isArray(ks.kindReasons) ? ks.kindReasons : [];
+    const hasCustom = selKinds.includes('__custom__');
     html += '<div style="display:flex;flex-direction:column;gap:12px;">';
     html += '<div><label style="' + labelStyle + '">직원 부서</label>';
     html += '<input type="text" id="ks-dept" value="' + (ks.dept||'') + '" placeholder="예: 재활치료팀, 원무과, 간호사실..." style="' + inputStyle + '"></div>';
     html += '<div><label style="' + labelStyle + '">직원 성함</label>';
     html += '<input type="text" id="ks-name" value="' + (ks.name||'') + '" placeholder="직원 성함을 입력해주세요" style="' + inputStyle + '"></div>';
+    html += '<div><label style="' + labelStyle + '">어떤 점이 친절하셨나요? <span style="font-size:11px;color:#7a94b0;font-weight:400;">(복수 선택 가능)</span></label>';
+    html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    kindOptions.forEach(function(opt) {
+      const sel = selKinds.includes(opt.label);
+      html += '<button type="button" onclick="toggleKindReason(this,\'' + opt.label + '\')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:2px solid ' + (sel ? 'var(--primary)' : '#e9eef5') + ';background:' + (sel ? '#e8f2fc' : '#f8fafc') + ';font-size:14px;font-family:inherit;cursor:pointer;text-align:left;width:100%;">' +
+        '<span style="font-size:18px;color:' + (sel ? 'var(--primary)' : '#ccc') + ';margin-right:2px;">' + (sel ? '✔' : '○') + '</span>' +
+        '<span style="font-size:20px;">' + opt.icon + '</span>' +
+        '<span style="font-weight:' + (sel ? '600' : '400') + ';color:' + (sel ? 'var(--primary)' : '#3d5a73') + ';">' + opt.label + '</span>' +
+        '</button>';
+    });
+    html += '<button type="button" onclick="toggleKindReason(this,\'__custom__\')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:2px solid ' + (hasCustom ? 'var(--primary)' : '#e9eef5') + ';background:' + (hasCustom ? '#e8f2fc' : '#f8fafc') + ';font-size:14px;font-family:inherit;cursor:pointer;text-align:left;width:100%;">' +
+      '<span style="font-size:18px;color:' + (hasCustom ? 'var(--primary)' : '#ccc') + ';margin-right:2px;">' + (hasCustom ? '✔' : '○') + '</span>' +
+      '<span style="font-size:20px;">✏️</span>' +
+      '<span style="font-weight:' + (hasCustom ? '600' : '400') + ';color:' + (hasCustom ? 'var(--primary)' : '#3d5a73') + ';">직접 입력</span>' +
+      '</button>';
+    html += '<div id="ks-custom-wrap" style="display:' + (hasCustom ? 'block' : 'none') + ';">';
+    html += '<input type="text" id="ks-custom" value="' + (ks.kindCustom||'') + '" placeholder="친절 내용을 직접 입력해주세요" style="' + inputStyle + '">';
+    html += '</div>';
+    html += '</div></div>';
     html += '</div>';
   } else if(s.type === 'respondent') {
     const rp = answers.respondent || {};
@@ -2036,9 +2085,13 @@ function nextStep() {
   const s = STEPS[currentStep];
   if(s.type === 'text') { var ta = document.getElementById('free-text'); if(ta) answers[s.id] = ta.value; }
   if(s.type === 'kind_staff') {
+    var customVal2 = document.getElementById('ks-custom')?.value || '';
+    var kindReasons2 = (answers.kind_staff?.kindReasons || []).map(function(r){ return r === '__custom__' ? customVal2 : r; }).filter(Boolean);
     answers.kind_staff = {
       dept: document.getElementById('ks-dept')?.value || '',
-      name: document.getElementById('ks-name')?.value || ''
+      name: document.getElementById('ks-name')?.value || '',
+      kindReasons: kindReasons2,
+      kindCustom: customVal2
     };
   }
   if(s.type === 'respondent') {
@@ -2101,7 +2154,9 @@ function submitSurvey() {
   if(s.type === 'text') { var ta = document.getElementById('free-text'); if(ta) answers[s.id] = ta.value; }
 
   if(STEPS[currentStep].type === 'kind_staff') {
-    answers.kind_staff = { dept: document.getElementById('ks-dept')?.value||'', name: document.getElementById('ks-name')?.value||'' };
+    var customVal = document.getElementById('ks-custom')?.value || '';
+    var kindReasons = (answers.kind_staff?.kindReasons || []).map(function(r){ return r === '__custom__' ? customVal : r; }).filter(Boolean);
+    answers.kind_staff = { dept: document.getElementById('ks-dept')?.value||'', name: document.getElementById('ks-name')?.value||'', kindReasons: kindReasons, kindCustom: customVal };
   }
   if(STEPS[currentStep].type === 'respondent') {
     answers.respondent = { name: document.getElementById('rp-name')?.value||'', phone: document.getElementById('rp-phone')?.value||'' };
@@ -2383,7 +2438,7 @@ function renderFeedbacks() {
         '</div>' +
       '</div>' +
       (positives.length ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">👍 ' + positives.join(' · ') + '</div><br>' : '') +
-      (f.kind_staff && (f.kind_staff.dept || f.kind_staff.name) ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">🏆 ' + (f.kind_staff.dept||'') + ' ' + (f.kind_staff.name||'') + '</div><br>' : '') +
+      (f.kind_staff && (f.kind_staff.dept || f.kind_staff.name) ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">🏆 ' + (f.kind_staff.dept||'') + ' ' + (f.kind_staff.name||'') + (f.kind_staff.kindReasons && f.kind_staff.kindReasons.length ? ' · ' + f.kind_staff.kindReasons.join(', ') : '') + '</div><br>' : '') +
       (f.respondent && (f.respondent.name || f.respondent.phone) ? '<div style="background:#e8f2fc;border-radius:8px;padding:5px 10px;margin-bottom:8px;font-size:12px;color:#185fa5;font-weight:500;">👤 ' + (f.respondent.name||'') + (f.respondent.phone ? ' · ' + f.respondent.phone : '') + '</div>' : '') +
       (negatives.length ? '<div style="' + badgeStyle + 'background:#fef0ee;color:#a32d2d;">⚠️ ' + negatives.join(' · ') + '</div><br>' : '') +
       (f.free ? '<div style="font-size:13px;color:#3d5a73;line-height:1.6;border-left:2px solid #d1dce8;padding-left:10px;margin-bottom:8px;font-style:italic;">"' + f.free + '"</div>' : '') +
