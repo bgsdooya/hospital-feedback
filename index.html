@@ -1061,9 +1061,13 @@
       </div>
       <div class="tab-group" id="contact-tabs">
         <button class="tab-btn active" onclick="setContactTab('전체',this)">전체</button>
-        <button class="tab-btn" onclick="setContactTab('외래',this)">외래</button>
-        <button class="tab-btn" onclick="setContactTab('치료',this)">치료</button>
-        <button class="tab-btn" onclick="setContactTab('병동',this)">병동</button>
+        <button class="tab-btn" onclick="setContactTab('2층',this)">2층</button>
+        <button class="tab-btn" onclick="setContactTab('3층',this)">3층</button>
+        <button class="tab-btn" onclick="setContactTab('4층',this)">4층</button>
+        <button class="tab-btn" onclick="setContactTab('5층',this)">5층</button>
+        <button class="tab-btn" onclick="setContactTab('6층',this)">6층</button>
+        <button class="tab-btn" onclick="setContactTab('7층',this)">7층</button>
+        <button class="tab-btn" onclick="setContactTab('8층',this)">8층</button>
       </div>
       <div class="contact-list" id="contact-list"></div>
     </div>
@@ -1234,29 +1238,35 @@
 // 데이터
 // ══════════════════════════════════
 const CONTACTS = [
-  { dept:'1재활외래', doc:'최수원', spec:'재활의학과 전문의', num:'055-912-2011', cat:'외래' },
-  { dept:'2재활외래', doc:'김민태', spec:'재활의학과 전문의', num:'055-912-2077', cat:'외래' },
-  { dept:'신경외과외래', doc:'박권병', spec:'신경외과 전문의', num:'055-912-2013', cat:'외래' },
-  { dept:'정형외과외래', doc:'김종호', spec:'정형외과 전문의', num:'055-912-2058', cat:'외래' },
-  { dept:'1내과외래', doc:'조영환', spec:'내과 전문의', num:'055-912-2062', cat:'외래' },
-  { dept:'2내과외래', doc:'장원준', spec:'내과 전문의', num:'055-912-2059', cat:'외래' },
-  { dept:'3내과외래', doc:'최병진', spec:'내과 전문의', num:'055-912-2064', cat:'외래' },
-  { dept:'7내과외래', doc:'김승현', spec:'내과 전문의', num:'055-912-2179', cat:'외래' },
-  { dept:'류마티스·내과검진외래', doc:'김윤정', spec:'류마티스내과 전문의', num:'055-912-0286', cat:'외래' },
-  { dept:'운동치료실', num:'055-912-2160', cat:'치료' },
-  { dept:'작업치료실', num:'055-912-2164', cat:'치료' },
-  { dept:'물리치료실', num:'055-912-2159', cat:'치료' },
-  { dept:'도수치료실', num:'055-912-2157', cat:'치료' },
-  { dept:'소아치료실', num:'055-912-2503', cat:'치료' },
-  { dept:'5병동(간호·간병통합병동)', num:'055-912-2048', cat:'병동' },
-  { dept:'6병동', num:'055-912-2169', cat:'병동' },
-  { dept:'7병동', num:'055-912-2175', cat:'병동' },
-  { dept:'진료협력팀', num:'055-912-2007', cat:'기타' },
-  { dept:'원무과(접수수납)', num:'055-912-2025', num2:'055-912-2024', cat:'기타' },
-  { dept:'진단검사팀', num:'055-912-2055', cat:'기타' },
-  { dept:'영상의학팀', num:'055-912-2019', cat:'기타' },
-  { dept:'건강검진센터', num:'055-912-0287', cat:'기타' },
-  { dept:'총무팀', num:'055-912-2184', cat:'기타' },
+  { dept:'1재활외래', doc:'최수원', spec:'재활의학과 전문의', num:'055-912-2011', cat:'외래', floor:'4층'},
+  { dept:'2재활외래', doc:'김민태', spec:'재활의학과 전문의', num:'055-912-2077', cat:'외래', floor:'4층'},
+  { dept:'신경외과외래', doc:'박권병', spec:'신경외과 전문의', num:'055-912-2013', cat:'외래', floor:'4층'},
+  { dept:'정형외과외래', doc:'김종호', spec:'정형외과 전문의', num:'055-912-2058', cat:'외래', floor:'4층'},
+  { dept:'1내과외래', doc:'조영환', spec:'내과 전문의', num:'055-912-2062', cat:'외래', floor:'4층'},
+  { dept:'2내과외래', doc:'장원준', spec:'내과 전문의', num:'055-912-2059', cat:'외래', floor:'4층'},
+  { dept:'3내과외래', doc:'최병진', spec:'내과 전문의', num:'055-912-2064', cat:'외래', floor:'4층'},
+  { dept:'7내과외래', doc:'김승현', spec:'내과 전문의', num:'055-912-2179', cat:'외래', floor:'4층'},
+  { dept:'류마티스내과외래', doc:'김윤정', spec:'류마티스내과 전문의', num:'055-912-0286', cat:'외래', floor:'2층'},
+  { dept:'운동치료실', num:'055-912-2160', cat:'치료', floor:'5층'},
+  { dept:'작업치료실', num:'055-912-2164', cat:'치료', floor:'5층'},
+  { dept:'물리치료실', num:'055-912-2159', cat:'치료', floor:'5층'},
+  { dept:'도수치료실', num:'055-912-2157', cat:'치료', floor:'3층'},
+  { dept:'소아치료실', num:'055-912-2503', cat:'치료', floor:'5층'},
+  { dept:'5병동(간호·간병통합병동)', num:'055-912-2048', cat:'병동', floor:'5층'},
+  { dept:'6병동', num:'055-912-2169', cat:'병동', floor:'6층'},
+  { dept:'7병동', num:'055-912-2175', cat:'병동', floor:'7층'},
+  { dept:'진료협력팀', num:'055-912-2007', cat:'기타', floor:'4층'},
+  { dept:'원무과(접수수납)', num:'055-912-2025', num2:'055-912-2024', cat:'기타', floor:'4층'},
+  { dept:'진단검사팀', num:'055-912-2055', cat:'기타', floor:'4층'},
+  { dept:'영상의학팀', num:'055-912-2019', cat:'기타', floor:'4층'},
+  { dept:'건강검진센터', num:'055-912-0287', cat:'기타', floor:'2층'},
+  { dept:'내시경실', num:'055-912-2085', cat:'기타', floor:'2층'},
+  { dept:'홍보본부장실', num:'055-912-0097', cat:'기타', floor:'2층'},
+  { dept:'감염관리실', num:'055-912-0139', cat:'기타', floor:'2층'},
+  { dept:'총무팀', num:'055-912-2184', cat:'기타', floor:'8층'},
+  { dept:'주사실', num:'055-912-2086', cat:'기타', floor:'4층'},
+  { dept:'약제팀', num:'055-912-2177', cat:'기타', floor:'7층'},
+  { dept:'영양팀', num:'055-912-2196', cat:'기타', floor:'8층'},
 ];
 
 // 피드백 저장소 (브라우저 localStorage 활용)
