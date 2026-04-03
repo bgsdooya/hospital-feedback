@@ -1734,8 +1734,9 @@ function renderSchedule() {
 
   if(window.loadScheduleFromFirestore) {
     window.loadScheduleFromFirestore(function(data) {
-      // 현재 월 이상인 것만 표시 (이전 달 자동 숨김)
-      const filtered = data.filter(d => d.month >= thisMonth);
+      // 이번 달 이하인 것 중 가장 최근 1개만 표시
+      const valid = data.filter(d => d.month <= thisMonth);
+      const filtered = valid.length > 0 ? [valid[0]] : [];
       if(filtered.length === 0) {
         el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>등록된 진료표가 없습니다<br><span style="font-size:12px;color:#7a94b0;">관리자에게 문의해주세요</span></p></div>';
       } else {
@@ -1768,8 +1769,9 @@ function renderMealFirebase() {
 
   if(window.loadMealFromFirestore) {
     window.loadMealFromFirestore(function(data) {
-      // 이번 주 이상인 것만 표시 (지난 주 자동 숨김)
-      const filtered = data.filter(d => d.weekStart >= thisSundayStr);
+      // 이번 주 일요일 이하인 것 중 가장 최근 1개만 표시
+      const valid = data.filter(d => d.weekStart <= thisSundayStr);
+      const filtered = valid.length > 0 ? [valid[0]] : [];
       if(filtered.length === 0) {
         el.innerHTML = '<div class="empty-state"><div class="empty-icon">🍱</div><p>등록된 식단표가 없습니다<br><span style="font-size:12px;color:#7a94b0;">관리자에게 문의해주세요</span></p></div>';
       } else {
