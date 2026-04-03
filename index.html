@@ -1239,11 +1239,11 @@
 // ══════════════════════════════════
 const CONTACTS = [
   // ── 8F ──
-  { dept:'영양팀', num:'055-912-2196', floor:'8F' },
-  { dept:'총무팀', num:'055-912-2184', floor:'8F' },
-  { dept:'중앙공급실', floor:'8F' },
   { dept:'병원장실', floor:'8F' },
   { dept:'행정부원장실', floor:'8F' },
+  { dept:'중앙공급실', floor:'8F' },
+  { dept:'총무팀', num:'055-912-2184', floor:'8F' },
+  { dept:'영양팀', num:'055-912-2196', floor:'8F' },
   // ── 7F ──
   { dept:'제7병동(701~721)', num:'055-912-2175', floor:'7F' },
   { dept:'약제팀', num:'055-912-2177', floor:'7F' },
@@ -1251,9 +1251,9 @@ const CONTACTS = [
   { dept:'제6병동(601~618)', num:'055-912-2169', floor:'6F' },
   // ── 5F ──
   { dept:'제5병동(501~508)', num:'055-912-2048', floor:'5F' },
-  { dept:'물리치료실', num:'055-912-2159', floor:'5F' },
   { dept:'운동치료실', num:'055-912-2160', floor:'5F' },
   { dept:'작업치료실', num:'055-912-2164', floor:'5F' },
+  { dept:'물리치료실', num:'055-912-2159', floor:'5F' },
   { dept:'소아치료실', num:'055-912-2503', floor:'5F' },
   // ── 4F ──
   { dept:'1재활외래', spec:'재활의학과 전문의', doc:'최수원', num:'055-912-2011', floor:'4F' },
@@ -1271,10 +1271,10 @@ const CONTACTS = [
   { dept:'주사실', num:'055-912-2086', floor:'4F' },
   { dept:'사회복지사실', floor:'4F' },
   // ── 3F ──
-  { dept:'도수치료실', num:'055-912-2157', floor:'3F' },
+  { dept:'도수치료팀', num:'055-912-2157', floor:'3F' },
   // ── 2F ──
-  { dept:'건강검진센터', num:'055-912-0287', floor:'2F' },
   { dept:'류마티스내과외래', spec:'류마티스내과 전문의', doc:'김윤정', num:'055-912-0286', floor:'2F' },
+  { dept:'건강검진센터', num:'055-912-0287', floor:'2F' },
   { dept:'내시경실', num:'055-912-2085', floor:'2F' },
   { dept:'홍보본부장실', num:'055-912-0097', floor:'2F' },
   { dept:'감염관리실', num:'055-912-0139', floor:'2F' },
@@ -2136,7 +2136,7 @@ const FLOOR_DESC = {
   '6F': '6병동',
   '5F': '5병동 · 재활치료',
   '4F': '외래진료 · 원무 · 검사',
-  '3F': '도수치료실',
+  '3F': '도수치료팀',
   '2F': '건강검진센터',
 };
 
@@ -2149,26 +2149,48 @@ function floorHeader(floor) {
 
 function makeContactItem(c) {
   var numClean = function(n){ return n.replace(/-/g,'').replace(/\./g,''); };
-  var deptCell = '<td style="padding:7px 8px;font-size:13px;font-weight:600;color:var(--text);vertical-align:middle;border-bottom:0.5px solid var(--gray-200);">' +
-    c.dept +
-    (c.spec ? '<br><span style="font-size:11px;font-weight:400;color:var(--accent);">' + c.spec + (c.doc ? ' ' + c.doc : '') + '</span>' : '') +
-    '</td>';
-  var numCell = '<td style="padding:7px 8px;font-size:12px;color:var(--gray-500);vertical-align:middle;border-bottom:0.5px solid var(--gray-200);">' +
-    (c.num ? c.num + (c.num2 ? '<br>' + c.num2 : '') : '') +
-    '</td>';
-  var btnCell = '<td style="padding:7px 8px;text-align:right;vertical-align:middle;border-bottom:0.5px solid var(--gray-200);">' +
-    (c.num ?
-      (c.num2 ?
-        '<div style="display:flex;flex-direction:column;gap:4px;">' +
-        '<a class="call-btn" href="tel:' + numClean(c.num) + '" style="text-decoration:none;padding:4px 10px;font-size:11px;">📞 ' + c.num + '</a>' +
-        '<a class="call-btn" href="tel:' + numClean(c.num2) + '" style="text-decoration:none;padding:4px 10px;font-size:11px;">📞 ' + c.num2 + '</a>' +
-        '</div>'
-        :
-        '<a class="call-btn" href="tel:' + numClean(c.num) + '" style="text-decoration:none;padding:5px 12px;font-size:12px;">📞 전화</a>'
-      ) : ''
-    ) +
-    '</td>';
-  return '<tr>' + deptCell + numCell + btnCell + '</tr>';
+  var ROW = 'style="border-bottom:0.5px solid var(--gray-200);"';
+  var TD1 = 'style="padding:7px 8px;font-size:13px;font-weight:600;color:var(--text);vertical-align:middle;"';
+  var TD2 = 'style="padding:7px 8px;font-size:12px;color:var(--gray-500);vertical-align:middle;"';
+  var TD3 = 'style="padding:7px 6px;text-align:right;vertical-align:middle;white-space:nowrap;"';
+  var BTNSTYLE = 'style="background:var(--primary);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;"';
+
+  var btn = '';
+  if(c.num2) {
+    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞 전화</a>';
+  } else if(c.num) {
+    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞 전화</a>';
+  }
+
+  return '<tr ' + ROW + '>' +
+    '<td ' + TD1 + '>' + c.dept +
+      (c.spec ? '<br><span style="font-size:11px;font-weight:400;color:var(--accent);">' + c.spec + (c.doc ? ' ' + c.doc : '') + '</span>' : '') +
+    '</td>' +
+    '<td ' + TD2 + '>' + (c.num ? c.num + (c.num2 ? '<br>' + c.num2 : '') : '') + '</td>' +
+    '<td ' + TD3 + '>' + btn + '</td>' +
+    '</tr>';
+}
+
+function noNumChips(items) {
+  if(!items || items.length === 0) return '';
+  return '<div style="display:flex;flex-wrap:wrap;gap:6px;padding:6px 4px 10px;">' +
+    items.map(function(c) {
+      return '<span style="background:var(--gray-100);border:0.5px solid var(--gray-300);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--gray-700);">' + c.dept + '</span>';
+    }).join('') +
+    '</div>';
+}
+
+function renderFloor(items) {
+  var withNum = items.filter(function(c){ return !!c.num; });
+  var noNum   = items.filter(function(c){ return !c.num; });
+  var out = '';
+  if(withNum.length) {
+    out += '<table style="width:100%;border-collapse:collapse;">';
+    withNum.forEach(function(c){ out += makeContactItem(c); });
+    out += '</table>';
+  }
+  if(noNum.length) out += noNumChips(noNum);
+  return out;
 }
 
 function renderContacts() {
@@ -2193,8 +2215,6 @@ function renderContacts() {
   }
 
   var out = '';
-  var tableStyle = 'width:100%;border-collapse:collapse;';
-
   if(tab === '전체') {
     var grouped = {};
     FLOOR_ORDER.forEach(function(f){ grouped[f] = []; });
@@ -2202,15 +2222,11 @@ function renderContacts() {
     FLOOR_ORDER.forEach(function(f) {
       if(!grouped[f] || grouped[f].length === 0) return;
       out += floorHeader(f);
-      out += '<table style="' + tableStyle + '">';
-      grouped[f].forEach(function(c){ out += makeContactItem(c); });
-      out += '</table>';
+      out += renderFloor(grouped[f]);
     });
   } else {
     out += floorHeader(tab);
-    out += '<table style="' + tableStyle + '">';
-    list.forEach(function(c){ out += makeContactItem(c); });
-    out += '</table>';
+    out += renderFloor(list);
   }
   el.innerHTML = out;
 }
