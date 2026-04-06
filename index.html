@@ -1918,17 +1918,17 @@ function renderMealFirebase() {
   const el = document.getElementById('meal-list-firebase');
   if(!el) return;
 
-  // 이번 주 일요일 구하기 (KST 기준, toISOString 미사용)
+  // 이번 주 일요일 구하기 (KST 기준)
   const now = new Date();
-  const kstOffset = 9 * 60;
-  const kstNow = new Date(now.getTime() + (kstOffset - now.getTimezoneOffset()) * 60000);
-  const day = kstNow.getDay(); // 0=일
-  const thisSunday = new Date(kstNow);
-  thisSunday.setDate(kstNow.getDate() - day);
-  // KST 날짜 직접 문자열 생성 (toISOString은 UTC 변환으로 날짜 밀림)
-  const thisSundayStr = thisSunday.getUTCFullYear() + '-' +
-    String(thisSunday.getUTCMonth()+1).padStart(2,'0') + '-' +
-    String(thisSunday.getUTCDate()).padStart(2,'0');
+  // KST 날짜 문자열 직접 계산
+  const kstMs = now.getTime() + 9 * 60 * 60 * 1000;
+  const kstDate = new Date(kstMs);
+  const dayOfWeek = kstDate.getUTCDay(); // 0=일
+  const sundayMs = kstMs - dayOfWeek * 24 * 60 * 60 * 1000;
+  const sundayDate = new Date(sundayMs);
+  const thisSundayStr = sundayDate.getUTCFullYear() + '-' +
+    String(sundayDate.getUTCMonth()+1).padStart(2,'0') + '-' +
+    String(sundayDate.getUTCDate()).padStart(2,'0');
 
   if(window.loadMealFromFirestore) {
     window.loadMealFromFirestore(function(data) {
