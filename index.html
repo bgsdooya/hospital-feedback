@@ -1917,14 +1917,17 @@ function renderMealFirebase() {
   const el = document.getElementById('meal-list-firebase');
   if(!el) return;
 
-  // 이번 주 일요일 구하기 (KST 기준)
+  // 이번 주 일요일 구하기 (KST 기준, toISOString 미사용)
   const now = new Date();
-  const kstOffset = 9 * 60; // KST = UTC+9
+  const kstOffset = 9 * 60;
   const kstNow = new Date(now.getTime() + (kstOffset - now.getTimezoneOffset()) * 60000);
   const day = kstNow.getDay(); // 0=일
   const thisSunday = new Date(kstNow);
   thisSunday.setDate(kstNow.getDate() - day);
-  const thisSundayStr = thisSunday.toISOString().split('T')[0];
+  // KST 날짜 직접 문자열 생성 (toISOString은 UTC 변환으로 날짜 밀림)
+  const thisSundayStr = thisSunday.getUTCFullYear() + '-' +
+    String(thisSunday.getUTCMonth()+1).padStart(2,'0') + '-' +
+    String(thisSunday.getUTCDate()).padStart(2,'0');
 
   if(window.loadMealFromFirestore) {
     window.loadMealFromFirestore(function(data) {
@@ -2337,8 +2340,8 @@ const FLOOR_DESC = {
 function floorHeader(floor, showFontBtn) {
   var fontBtns = showFontBtn ?
     '<div style="display:flex;gap:4px;margin-left:auto;">' +
-    '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:12px;padding:3px 8px;">가</button>' +
-    '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:15px;padding:3px 8px;">가+</button>' +
+    '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:11px;padding:3px 7px;">가</button>' +
+    '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:14px;padding:3px 7px;font-weight:700;">가+</button>' +
     '</div>' : '';
   return '<div style="display:flex;align-items:center;gap:8px;padding:14px 4px 6px;">' +
     '<div style="background:var(--primary);color:white;font-size:12px;font-weight:700;border-radius:8px;padding:4px 12px;min-width:36px;text-align:center;">' + floor + '</div>' +
@@ -2432,8 +2435,8 @@ function renderContacts() {
       if(withNum.length) {
         var fontBtns = isFirst ?
           '<div style="display:flex;gap:4px;margin-left:auto;">' +
-          '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:12px;padding:3px 8px;">가</button>' +
-          '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:15px;padding:3px 8px;">가+</button>' +
+          '<button id="fs-normal" class="font-size-btn active" onclick="setFontSize(\'normal\')" style="font-size:11px;padding:3px 7px;">가</button>' +
+          '<button id="fs-large" class="font-size-btn" onclick="setFontSize(\'large\')" style="font-size:14px;padding:3px 7px;font-weight:700;">가+</button>' +
           '</div>' : '';
         isFirst = false;
         out += '<tr><td colspan="3" style="padding:12px 8px 4px;border-bottom:0.5px solid var(--gray-200);">' +
