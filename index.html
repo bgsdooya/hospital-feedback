@@ -2367,7 +2367,7 @@ function makeContactItem(c) {
 
   return '<tr ' + ROW + '>' +
     '<td ' + TD1 + '>' + c.dept +
-      (c.spec ? '<br><span style="font-size:11px;font-weight:400;color:var(--accent);">' + c.spec + (c.doc ? ' ' + c.doc : '') + '</span>' : '') +
+      (c.spec ? '<br><span style="font-size:11px;font-weight:400;color:var(--accent);">' + c.spec + '</span>' + (c.doc ? '<br><span style="font-size:11px;font-weight:600;color:var(--accent);">' + c.doc + '</span>' : '') : '') +
     '</td>' +
     '<td ' + TD2 + '>' + (c.num ? c.num + (c.num2 ? '<br>' + c.num2 : '') : '') + '</td>' +
     '<td ' + TD3 + '>' + btn + '</td>' +
