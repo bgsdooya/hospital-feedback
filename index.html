@@ -366,10 +366,10 @@
   .font-size-btn:hover:not(.active) { background:#f0f5fb; }
   body.font-large { font-size:18px; }
   body.font-large .content p,
-  body.font-large .content span,
   body.font-large .content div,
-  body.font-large td, body.font-large .dept,
-  body.font-large .num { font-size:1.2em !important; }
+  body.font-large .dept,
+  body.font-large .num { font-size:1.15em !important; }
+  body.font-large td { font-size:1.05em !important; }
   body.font-small { font-size:13px; }
   body.font-small .content p,
   body.font-small .content span,
@@ -2353,7 +2353,7 @@ function floorHeader(floor, showFontBtn) {
 function makeContactItem(c) {
   var numClean = function(n){ return n.replace(/-/g,'').replace(/\./g,''); };
   var ROW = 'style="border-bottom:0.5px solid var(--gray-200);"';
-  var TD1 = 'style="padding:7px 8px;font-size:13px;font-weight:600;color:var(--text);vertical-align:middle;width:55%;"';
+  var TD1 = 'style="padding:7px 8px;font-size:13px;font-weight:600;color:var(--text);vertical-align:middle;width:55%;word-break:keep-all;"';
   var TD2 = 'style="padding:7px 8px;font-size:12px;color:var(--gray-500);vertical-align:middle;width:30%;"';
   var TD3 = 'style="padding:7px 6px;text-align:right;vertical-align:middle;white-space:nowrap;width:15%;"';
   var BTNSTYLE = 'style="background:var(--primary);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;"';
@@ -2367,7 +2367,7 @@ function makeContactItem(c) {
 
   return '<tr ' + ROW + '>' +
     '<td ' + TD1 + '>' + c.dept +
-      (c.spec ? '<br><span style="font-size:11px;font-weight:400;color:var(--accent);">' + c.spec + '</span>' + (c.doc ? '<br><span style="font-size:11px;font-weight:600;color:var(--accent);">' + c.doc + '</span>' : '') : '') +
+      (c.spec ? '<br><span style="font-size:10px !important;font-weight:400;color:var(--accent);line-height:1.6;display:block;">' + c.spec + '</span>' + (c.doc ? '<span style="font-size:10px !important;font-weight:600;color:var(--accent);line-height:1.4;display:block;">' + c.doc + '</span>' : '') : '') +
     '</td>' +
     '<td ' + TD2 + '>' + (c.num ? c.num + (c.num2 ? '<br>' + c.num2 : '') : '') + '</td>' +
     '<td ' + TD3 + '>' + btn + '</td>' +
