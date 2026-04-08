@@ -2620,24 +2620,22 @@ function updateMonthStats() {
 }
 
 function getMonthList() {
-  // 미처리/보류중: 월 무관하게 현재 탭에 포함
-  // 처리완료: 해당 월 것만
+  var kstMs = new Date().getTime() + 9*60*60*1000;
+  var kstNow = new Date(kstMs);
+  var thisMonth = kstNow.getUTCFullYear() + '-' + String(kstNow.getUTCMonth()+1).padStart(2,'0');
+
   return feedbacks.filter(function(f) {
     var d = new Date(f.time);
     var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
     var status = f.status || '미처리';
+
+    // 처리완료: 해당 월 탭에만
     if(status === '처리완료') return m === currentMonth;
-    else return m === currentMonth || status !== '처리완료'; // 미처리/보류중은 항상
-  }).filter(function(f) {
-    // 미처리/보류중은 이번달 탭에만 노출 (이전달 탭에선 처리완료만)
-    var d = new Date(f.time);
-    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-    var status = f.status || '미처리';
-    var kstMs = new Date().getTime() + 9*60*60*1000;
-    var kstNow = new Date(kstMs);
-    var thisMonth = kstNow.getUTCFullYear() + '-' + String(kstNow.getUTCMonth()+1).padStart(2,'0');
-    if(status !== '처리완료' && currentMonth !== thisMonth) return false;
-    return m === currentMonth || status !== '처리완료';
+
+    // 미처리/보류중: 이번달 탭에서만 표시 (월 무관하게)
+    // 이전달 탭에선 해당 월 것만 (이미 처리완료로 바꿔야 보관됨)
+    if(currentMonth === thisMonth) return true; // 이번달 탭: 모든 미처리/보류중
+    return m === currentMonth; // 이전달 탭: 해당 월 미처리/보류중만
   });
 }
 
@@ -2668,6 +2666,8 @@ function _renderDashboardUI() {
   document.getElementById('stat-avg').textContent = avg;
   document.getElementById('stat-low').textContent = low;
 
+  buildMonthTabs();
+  updateMonthStats();
   renderFeedbacks();
 }
 
