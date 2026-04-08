@@ -1324,40 +1324,40 @@
         </div>
       </div>
 
-      <!-- 월별 통계 -->
-      <div class="section-title">📅 월별 통계</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-        <input type="month" id="stat-month" style="flex:1;padding:8px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;" onchange="renderMonthStats()">
-        <button onclick="exportCSV()" style="background:#edfaf3;border:1.5px solid #2ecc71;color:#0f6e56;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;">⬇ CSV</button>
-      </div>
-      <div id="month-stats" style="background:#f8fafc;border-radius:12px;padding:12px;margin-bottom:14px;display:none;">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">
-          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
-            <div style="font-size:20px;font-weight:700;color:#1a6eb5;" id="ms-total">0</div>
-            <div style="font-size:11px;color:#7a94b0;">총 접수</div>
-          </div>
-          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
-            <div style="font-size:20px;font-weight:700;color:#e8941a;" id="ms-avg">-</div>
-            <div style="font-size:11px;color:#7a94b0;">평균 평점</div>
-          </div>
-          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
-            <div style="font-size:20px;font-weight:700;color:#e74c3c;" id="ms-low">0</div>
-            <div style="font-size:11px;color:#7a94b0;">저평가</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="ms-types"></div>
+      <!-- 월별 탭 + 통계 + 목록 -->
+      <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>📋 피드백 목록</span>
+        <button onclick="exportCSV()" style="background:#edfaf3;border:1.5px solid #2ecc71;color:#0f6e56;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">⬇ CSV</button>
       </div>
 
-      <div class="section-title">📋 피드백 목록</div>
-      <div class="filter-row" style="flex-wrap:wrap;gap:6px;">
+      <!-- 월별 탭 -->
+      <div id="month-tab-row" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;"></div>
+
+      <!-- 월별 통계 요약 -->
+      <div id="month-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">
+        <div style="background:#e8f2fc;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#1a6eb5;" id="ms-total">0</div>
+          <div style="font-size:11px;color:#3d5a73;">총 접수</div>
+        </div>
+        <div style="background:#fff8f0;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#e8941a;" id="ms-avg">-</div>
+          <div style="font-size:11px;color:#3d5a73;">평균 평점</div>
+        </div>
+        <div style="background:#fff0f0;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#e74c3c;" id="ms-low">0</div>
+          <div style="font-size:11px;color:#3d5a73;">미처리</div>
+        </div>
+      </div>
+
+      <!-- 상태 필터 -->
+      <div class="filter-row" style="flex-wrap:wrap;gap:6px;margin-bottom:10px;">
         <button class="filter-chip active" onclick="setFilter('전체',this)">전체</button>
-        <button class="filter-chip" onclick="setFilter('저평가',this)">⚠️ 저평가</button>
-        <button class="filter-chip" onclick="setFilter('미답변',this)">💬 미답변</button>
         <button class="filter-chip" onclick="setFilter('오늘',this)">📅 오늘</button>
         <button class="filter-chip" onclick="setFilter('미처리',this)">🔴 미처리</button>
         <button class="filter-chip" onclick="setFilter('처리완료',this)">✅ 처리완료</button>
         <button class="filter-chip" onclick="setFilter('보류중',this)">⏸ 보류중</button>
       </div>
+
       <div id="feedback-list"></div>
       </div><!-- /admin-section-feedback -->
 
@@ -2570,6 +2570,77 @@ function setFilter(f, btn) {
   renderFeedbacks();
 }
 
+var currentMonth = ''; // 현재 선택된 월
+
+function buildMonthTabs() {
+  // feedbacks에서 월 목록 추출
+  var months = {};
+  var now = new Date();
+  var kstMs = now.getTime() + 9*60*60*1000;
+  var kstNow = new Date(kstMs);
+  var thisMonth = kstNow.getUTCFullYear() + '-' + String(kstNow.getUTCMonth()+1).padStart(2,'0');
+  
+  feedbacks.forEach(function(f) {
+    var d = new Date(f.time);
+    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    months[m] = true;
+  });
+  months[thisMonth] = true; // 이번달은 항상 표시
+  
+  var sorted = Object.keys(months).sort().reverse();
+  if(!currentMonth || !months[currentMonth]) currentMonth = thisMonth;
+  
+  var row = document.getElementById('month-tab-row');
+  if(!row) return;
+  row.innerHTML = sorted.map(function(m) {
+    var parts = m.split('-');
+    var label = parts[0] + '년 ' + parseInt(parts[1]) + '월';
+    var active = m === currentMonth;
+    return '<button onclick="selectMonth(\'' + m + '\')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid ' + (active?'#1a6eb5':'#d1dce8') + ';background:' + (active?'#1a6eb5':'white') + ';color:' + (active?'white':'#3d5a73') + ';">' + label + '</button>';
+  }).join('');
+}
+
+function selectMonth(m) {
+  currentMonth = m;
+  buildMonthTabs();
+  renderFeedbacks();
+  updateMonthStats();
+}
+
+function updateMonthStats() {
+  var list = getMonthList();
+  var el_total = document.getElementById('ms-total');
+  var el_avg = document.getElementById('ms-avg');
+  var el_low = document.getElementById('ms-low');
+  if(!el_total) return;
+  el_total.textContent = list.length;
+  var scored = list.filter(function(f){ return f.overall > 0; });
+  el_avg.textContent = scored.length ? (scored.reduce(function(s,f){return s+(f.overall||0);},0)/scored.length).toFixed(1) : '-';
+  el_low.textContent = list.filter(function(f){ return !f.status || f.status === '미처리'; }).length;
+}
+
+function getMonthList() {
+  // 미처리/보류중: 월 무관하게 현재 탭에 포함
+  // 처리완료: 해당 월 것만
+  return feedbacks.filter(function(f) {
+    var d = new Date(f.time);
+    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    var status = f.status || '미처리';
+    if(status === '처리완료') return m === currentMonth;
+    else return m === currentMonth || status !== '처리완료'; // 미처리/보류중은 항상
+  }).filter(function(f) {
+    // 미처리/보류중은 이번달 탭에만 노출 (이전달 탭에선 처리완료만)
+    var d = new Date(f.time);
+    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    var status = f.status || '미처리';
+    var kstMs = new Date().getTime() + 9*60*60*1000;
+    var kstNow = new Date(kstMs);
+    var thisMonth = kstNow.getUTCFullYear() + '-' + String(kstNow.getUTCMonth()+1).padStart(2,'0');
+    if(status !== '처리완료' && currentMonth !== thisMonth) return false;
+    return m === currentMonth || status !== '처리완료';
+  });
+}
+
 function renderDashboard() {
   // Firestore에서 실시간 로드
   if(window.loadFeedbacksFromFirestore) {
@@ -2602,11 +2673,9 @@ function _renderDashboardUI() {
 
 function renderFeedbacks() {
   const today = new Date().toDateString();
-  let list = feedbacks;
+  let list = getMonthList ? getMonthList() : feedbacks;
 
-  if(currentFilter === '저평가') list = list.filter(f => f.overall > 0 && f.overall <= 2);
-  else if(currentFilter === '미답변') list = list.filter(f => !f.replied);
-  else if(currentFilter === '오늘') list = list.filter(f => new Date(f.time).toDateString() === today);
+  if(currentFilter === '오늘') list = list.filter(f => new Date(f.time).toDateString() === today);
   else if(currentFilter === '미처리') list = list.filter(f => !f.status || f.status === '미처리');
   else if(currentFilter === '처리완료') list = list.filter(f => f.status === '처리완료');
   else if(currentFilter === '보류중') list = list.filter(f => f.status === '보류중');
@@ -2635,15 +2704,22 @@ function renderFeedbacks() {
     const positives = Array.isArray(f.positive) ? f.positive : (f.positive ? [f.positive] : []);
     const negatives = Array.isArray(f.comfort) ? f.comfort.filter(c => c !== '불편사항 없음') : [];
     const badgeStyle = 'display:inline-flex;align-items:center;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;margin-bottom:6px;margin-right:4px;';
+    const statusColor = (!f.status||f.status==='미처리') ? '#e74c3c' : f.status==='처리완료' ? '#0f6e56' : '#854f0b';
+    const statusBg = (!f.status||f.status==='미처리') ? '#fff0f0' : f.status==='처리완료' ? '#edfaf3' : '#fffaed';
+    const statusLabel = f.status || '미처리';
 
-    return '<div style="background:white;border-radius:14px;border:0.5px solid #e0e8f0;border-left:4px solid ' + borderColor + ';padding:14px 16px;margin-bottom:10px;">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
-        '<span style="font-size:15px;">' + (f.overall ? stars(f.overall) : '미평가') + '</span>' +
-        '<div style="display:flex;align-items:center;gap:6px;">' +
-          (f.replied ? '<span style="background:#edfaf3;color:#0f6e56;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;">✓ 답변완료</span>' : '') +
-          '<span style="font-size:10px;color:#7a94b0;background:#f0f5fb;padding:2px 8px;border-radius:10px;">' + timeStr(f.time) + '</span>' +
+    return '<div style="background:white;border-radius:14px;border:0.5px solid #e0e8f0;border-left:4px solid ' + borderColor + ';margin-bottom:8px;overflow:hidden;">' +
+      '<div onclick="toggleCard(' + f.id + ')" style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">' +
+            '<span style="font-size:13px;">' + (f.overall ? stars(f.overall) : '미평가') + '</span>' +
+            '<span style="background:' + statusBg + ';color:' + statusColor + ';border-radius:10px;padding:2px 7px;font-size:10px;font-weight:700;">' + statusLabel + '</span>' +
+          '</div>' +
+          '<div style="font-size:11px;color:#7a94b0;">' + timeStr(f.time) + (positives.length ? ' · ' + positives[0] : '') + '</div>' +
         '</div>' +
+        '<span id="arrow-' + f.id + '" style="font-size:16px;color:#b0bec5;margin-left:8px;">›</span>' +
       '</div>' +
+      '<div id="card-detail-' + f.id + '" style="display:none;padding:0 14px 14px;border-top:0.5px solid #f0f5fb;">' +
       (positives.length ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">👍 ' + positives.join(' · ') + '</div><br>' : '') +
       (f.kind_staff && (f.kind_staff.dept || f.kind_staff.name) ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">🏆 ' + (f.kind_staff.dept||'') + ' ' + (f.kind_staff.name||'') + (f.kind_staff.kindReasons && f.kind_staff.kindReasons.length ? ' · ' + f.kind_staff.kindReasons.join(', ') : '') + '</div><br>' : '') +
       (f.respondent && f.respondent.name ? '<div style="background:#e8f2fc;border-radius:8px;padding:5px 10px;margin-bottom:8px;font-size:12px;color:#185fa5;font-weight:500;">👤 ' + (f.respondent.name||'') + '</div>' : '') +
@@ -2688,6 +2764,7 @@ function setStatus(firestoreId, localId, status) {
     }
   }
   renderFeedbacks();
+  updateMonthStats();
 }
 
 function deleteFeedback(firestoreId, localId) {
@@ -2763,6 +2840,15 @@ function exportCSV() {
   a.download = '피드백_' + (month||'전체') + '.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function toggleCard(id) {
+  var det = document.getElementById('card-detail-' + id);
+  var arr = document.getElementById('arrow-' + id);
+  if(!det) return;
+  var open = det.style.display === 'block';
+  det.style.display = open ? 'none' : 'block';
+  if(arr) arr.textContent = open ? '›' : '∨';
 }
 
 function sendReply(id) {
