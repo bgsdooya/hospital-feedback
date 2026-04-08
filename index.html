@@ -1300,7 +1300,6 @@
         <button onclick="setAdminMenu('schedule',this)" id="amenu-schedule" style="flex-shrink:0;background:white;color:#3d5a73;border:1.5px solid #d1dce8;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📅 진료표</button>
         <button onclick="setAdminMenu('meal',this)" id="amenu-meal" style="flex-shrink:0;background:white;color:#3d5a73;border:1.5px solid #d1dce8;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🍱 식단표</button>
         <button onclick="setAdminMenu('news',this)" id="amenu-news" style="flex-shrink:0;background:white;color:#3d5a73;border:1.5px solid #d1dce8;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📢 병원소식</button>
-        <button onclick="setAdminMenu('press',this)" id="amenu-press" style="flex-shrink:0;background:white;color:#3d5a73;border:1.5px solid #d1dce8;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📰 언론보도</button>
       </div>
 
       <!-- 피드백 섹션 -->
@@ -1325,12 +1324,39 @@
         </div>
       </div>
 
+      <!-- 월별 통계 -->
+      <div class="section-title">📅 월별 통계</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <input type="month" id="stat-month" style="flex:1;padding:8px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;" onchange="renderMonthStats()">
+        <button onclick="exportCSV()" style="background:#edfaf3;border:1.5px solid #2ecc71;color:#0f6e56;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;">⬇ CSV</button>
+      </div>
+      <div id="month-stats" style="background:#f8fafc;border-radius:12px;padding:12px;margin-bottom:14px;display:none;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">
+          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
+            <div style="font-size:20px;font-weight:700;color:#1a6eb5;" id="ms-total">0</div>
+            <div style="font-size:11px;color:#7a94b0;">총 접수</div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
+            <div style="font-size:20px;font-weight:700;color:#e8941a;" id="ms-avg">-</div>
+            <div style="font-size:11px;color:#7a94b0;">평균 평점</div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:8px;text-align:center;border:0.5px solid #e0e8f0;">
+            <div style="font-size:20px;font-weight:700;color:#e74c3c;" id="ms-low">0</div>
+            <div style="font-size:11px;color:#7a94b0;">저평가</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="ms-types"></div>
+      </div>
+
       <div class="section-title">📋 피드백 목록</div>
-      <div class="filter-row">
+      <div class="filter-row" style="flex-wrap:wrap;gap:6px;">
         <button class="filter-chip active" onclick="setFilter('전체',this)">전체</button>
         <button class="filter-chip" onclick="setFilter('저평가',this)">⚠️ 저평가</button>
         <button class="filter-chip" onclick="setFilter('미답변',this)">💬 미답변</button>
         <button class="filter-chip" onclick="setFilter('오늘',this)">📅 오늘</button>
+        <button class="filter-chip" onclick="setFilter('미처리',this)">🔴 미처리</button>
+        <button class="filter-chip" onclick="setFilter('처리완료',this)">✅ 처리완료</button>
+        <button class="filter-chip" onclick="setFilter('보류중',this)">⏸ 보류중</button>
       </div>
       <div id="feedback-list"></div>
       </div><!-- /admin-section-feedback -->
@@ -1596,7 +1622,7 @@ function showTab(tab) {
 }
 
 function setAdminMenu(menu, btn) {
-  ['feedback','schedule','meal','news','press'].forEach(function(m) {
+  ['feedback','schedule','meal','news'].forEach(function(m) {
     const sec = document.getElementById('admin-section-'+m);
     const b = document.getElementById('amenu-'+m);
     if(sec) sec.style.display = m === menu ? 'block' : 'none';
@@ -1610,7 +1636,6 @@ function setAdminMenu(menu, btn) {
   if(menu === 'schedule') loadScheduleAdmin();
   if(menu === 'meal') loadMealAdmin();
   if(menu === 'news') loadNewsAdmin();
-  if(menu === 'press') loadPressAdmin();
 }
 
 function uploadSchedule() {
@@ -2582,6 +2607,9 @@ function renderFeedbacks() {
   if(currentFilter === '저평가') list = list.filter(f => f.overall > 0 && f.overall <= 2);
   else if(currentFilter === '미답변') list = list.filter(f => !f.replied);
   else if(currentFilter === '오늘') list = list.filter(f => new Date(f.time).toDateString() === today);
+  else if(currentFilter === '미처리') list = list.filter(f => !f.status || f.status === '미처리');
+  else if(currentFilter === '처리완료') list = list.filter(f => f.status === '처리완료');
+  else if(currentFilter === '보류중') list = list.filter(f => f.status === '보류중');
 
   const el = document.getElementById('feedback-list');
   if(!el) return;
@@ -2625,8 +2653,14 @@ function renderFeedbacks() {
         '<span style="font-size:10px;background:#f0f5fb;color:#7a94b0;border-radius:10px;padding:2px 8px;">안내 ' + (f.info_score||0) + '점</span>' +
         '<span style="font-size:10px;background:#f0f5fb;color:#7a94b0;border-radius:10px;padding:2px 8px;">만족도 ' + (f.overall||0) + '점</span>' +
       '</div>' +
+      '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">' +
+        statusBtn(f, '미처리', '🔴', '#fff0f0', '#e74c3c') +
+        statusBtn(f, '처리완료', '✅', '#edfaf3', '#0f6e56') +
+        statusBtn(f, '보류중', '⏸', '#fffaed', '#854f0b') +
+        '<button onclick="deleteFeedback(\'' + (f.firestoreId||'') + '\','+f.id+')" style="margin-left:auto;background:#fff0f0;border:1px solid #f09595;color:#a32d2d;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">삭제</button>' +
+      '</div>' +
       (!f.replied ?
-        '<div style="margin-top:10px;">' +
+        '<div style="margin-top:8px;">' +
           '<textarea class="reply-input" id="reply-'+f.id+'" rows="2" placeholder="내부 메모 또는 답변 입력..."></textarea>' +
           '<button class="reply-btn" onclick="sendReply('+f.id+')">저장</button>' +
         '</div>'
@@ -2635,6 +2669,100 @@ function renderFeedbacks() {
       ) +
     '</div>';
   }).join('');
+}
+
+function statusBtn(f, label, icon, bg, color) {
+  var active = f.status === label;
+  return '<button onclick="setStatus(\'' + (f.firestoreId||'') + '\',' + f.id + ',\'' + label + '\')" style="background:' + (active ? bg : '#f8fafc') + ';border:1px solid ' + (active ? color : '#e0e8f0') + ';color:' + (active ? color : '#7a94b0') + ';border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:' + (active ? '700' : '400') + ';">' + icon + ' ' + label + '</button>';
+}
+
+function setStatus(firestoreId, localId, status) {
+  var fb = feedbacks.find(function(f){ return f.id === localId; });
+  if(!fb) return;
+  fb.status = status;
+  if(firestoreId && window.saveReplyToFirestore) {
+    if(window.saveStatusToFirestore) window.saveStatusToFirestore(firestoreId, status);
+    else if(window.db) {
+      var docRef = window.db ? true : false;
+      if(window.updateFeedbackStatus) window.updateFeedbackStatus(firestoreId, status);
+    }
+  }
+  renderFeedbacks();
+}
+
+function deleteFeedback(firestoreId, localId) {
+  if(!confirm('이 피드백을 삭제하시겠습니까?')) return;
+  if(firestoreId && window.deleteFromFirestore) {
+    window.deleteFromFirestore('feedbacks', firestoreId).then(function(ok) {
+      if(ok) {
+        feedbacks = feedbacks.filter(function(f){ return f.id !== localId; });
+        renderDashboard();
+        alert('삭제되었습니다.');
+      }
+    });
+  } else {
+    feedbacks = feedbacks.filter(function(f){ return f.id !== localId; });
+    renderDashboard();
+  }
+}
+
+function renderMonthStats() {
+  var month = document.getElementById('stat-month').value;
+  var box = document.getElementById('month-stats');
+  if(!month || !feedbacks.length) { box.style.display='none'; return; }
+  var list = feedbacks.filter(function(f){
+    var d = new Date(f.time);
+    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    return m === month;
+  });
+  box.style.display = 'block';
+  document.getElementById('ms-total').textContent = list.length;
+  var scored = list.filter(function(f){ return f.overall > 0; });
+  var avg = scored.length ? (scored.reduce(function(s,f){ return s+(f.overall||0); },0)/scored.length).toFixed(1) : '-';
+  document.getElementById('ms-avg').textContent = avg;
+  document.getElementById('ms-low').textContent = list.filter(function(f){ return f.overall>0&&f.overall<=2; }).length;
+  var types = {};
+  list.forEach(function(f){
+    var ps = Array.isArray(f.positive)?f.positive:(f.positive?[f.positive]:[]);
+    ps.forEach(function(p){ types[p]=(types[p]||0)+1; });
+  });
+  document.getElementById('ms-types').innerHTML = Object.keys(types).map(function(k){
+    return '<span style="background:#e8f2fc;color:#185fa5;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;">' + k + ' ' + types[k] + '건</span>';
+  }).join('');
+}
+
+function exportCSV() {
+  var month = document.getElementById('stat-month').value;
+  var list = month ? feedbacks.filter(function(f){
+    var d = new Date(f.time);
+    var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    return m === month;
+  }) : feedbacks;
+  if(!list.length) { alert('데이터가 없습니다.'); return; }
+  var rows = [['날짜','평점','만족유형','친절직원','불만사항','자유의견','상태','성함']];
+  var timeStr = function(t){ var d=new Date(t); return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); };
+  list.forEach(function(f){
+    var ps = Array.isArray(f.positive)?f.positive:(f.positive?[f.positive]:[]);
+    var ng = Array.isArray(f.comfort)?f.comfort.filter(function(c){return c!=='불편사항 없음';}):(f.comfort?[f.comfort]:[]);
+    rows.push([
+      timeStr(f.time),
+      f.overall||'',
+      ps.join('|'),
+      f.kind_staff?(f.kind_staff.dept||'')+(f.kind_staff.name?' '+f.kind_staff.name:''):'',
+      ng.join('|'),
+      (f.free||'').replace(/,/g,' '),
+      f.status||'미처리',
+      f.respondent?f.respondent.name||'':''
+    ]);
+  });
+  var csv = '\uFEFF' + rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '피드백_' + (month||'전체') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function sendReply(id) {
@@ -2706,6 +2834,13 @@ window.loadFeedbacksFromFirestore = function(callback) {
 };
 
 // 답변 저장
+window.updateFeedbackStatus = async function(firestoreId, status) {
+  try {
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js");
+    await updateDoc(doc(db, "feedbacks", firestoreId), { status: status });
+  } catch(e) { console.error("상태 저장 실패:", e); }
+};
+
 window.saveReplyToFirestore = async function(firestoreId, reply) {
   try {
     await updateDoc(doc(db, "feedbacks", firestoreId), { replied: true, reply: reply });
