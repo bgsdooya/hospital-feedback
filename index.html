@@ -1404,17 +1404,17 @@
           <div style="display:flex;flex-direction:column;gap:10px;">
             <input type="text" id="news-title" placeholder="제목" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
             <textarea id="news-content" rows="4" placeholder="내용을 입력하세요" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;resize:none;box-sizing:border-box;"></textarea>
+
             <div>
-              <label style="font-size:13px;font-weight:600;color:#3d5a73;display:block;margin-bottom:4px;">이미지 URL (최대 5장)</label>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <input type="url" id="news-img1" placeholder="이미지1 URL" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
-                <input type="url" id="news-img2" placeholder="이미지2 URL (선택)" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
-                <input type="url" id="news-img3" placeholder="이미지3 URL (선택)" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
-                <input type="url" id="news-img4" placeholder="이미지4 URL (선택)" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
-                <input type="url" id="news-img5" placeholder="이미지5 URL (선택)" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
-                <input type="url" id="news-img6" placeholder="이미지6 URL (선택)" style="width:100%;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
+              <label style="font-size:13px;font-weight:600;color:#3d5a73;display:block;margin-bottom:6px;">이미지 URL <span style="font-weight:400;color:#7a94b0;">(최대 10장 · 한 장씩 추가)</span></label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;">
+                <input type="url" id="news-img-input" placeholder="이미지 URL 입력 후 추가 버튼" style="flex:1;padding:10px 12px;border:1.5px solid #d1dce8;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;">
+                <button onclick="addNewsImg()" style="background:#1a6eb5;color:white;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;">+ 추가</button>
               </div>
+              <div id="news-img-preview" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;"></div>
+              <div id="news-img-count" style="font-size:11px;color:#7a94b0;margin-top:4px;">0 / 10장</div>
             </div>
+
             <button onclick="uploadNews()" style="background:#e8941a;color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;width:100%;">📢 소식 게시</button>
           </div>
         </div>
@@ -1678,27 +1678,54 @@ function uploadMeal() {
   }
 }
 
+var newsImgList = []; // 추가된 이미지 URL 목록
+
+function addNewsImg() {
+  var input = document.getElementById('news-img-input');
+  var url = input.value.trim();
+  if(!url) { alert('URL을 입력해주세요'); return; }
+  if(newsImgList.length >= 10) { alert('최대 10장까지 추가 가능합니다'); return; }
+  newsImgList.push(url);
+  input.value = '';
+  renderNewsImgPreview();
+}
+
+function removeNewsImg(idx) {
+  newsImgList.splice(idx, 1);
+  renderNewsImgPreview();
+}
+
+function renderNewsImgPreview() {
+  var wrap = document.getElementById('news-img-preview');
+  var count = document.getElementById('news-img-count');
+  if(!wrap) return;
+  wrap.innerHTML = newsImgList.map(function(url, i) {
+    return '<div style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#e8f2fc;">' +
+      '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=&apos;none&apos;">' +
+      '<button data-ri="'+i+'" class="nc-del-ni" style="position:absolute;top:2px;right:2px;background:rgba(180,0,0,0.8);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:inherit;">✕</button>' +
+    '</div>';
+  }).join('');
+  if(count) count.textContent = newsImgList.length + ' / 10장';
+  wrap.querySelectorAll('.nc-del-ni').forEach(function(btn) {
+    btn.addEventListener('click', function() { removeNewsImg(parseInt(this.dataset.ri)); });
+  });
+}
+
 function uploadNews() {
-  const title = document.getElementById('news-title').value.trim();
-  const body = document.getElementById('news-content').value.trim();
+  var title = document.getElementById('news-title').value.trim();
+  var body = document.getElementById('news-content').value.trim();
   if(!title || !body) { alert('제목과 내용을 입력해주세요'); return; }
-  const images = [1,2,3,4,5,6].map(i => {
-    const el = document.getElementById('news-img'+i);
-    return el ? el.value.trim() : '';
-  }).filter(u => u !== '');
-  const now = new Date();
-  const date = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
-  const data = { title, content: body, images, date, time: Date.now() };
+  var now = new Date();
+  var date = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
+  var data = { title: title, content: body, images: newsImgList.slice(), date: date, time: Date.now() };
   if(window.saveNewsToFirestore) {
-    window.saveNewsToFirestore(data).then(ok => {
+    window.saveNewsToFirestore(data).then(function(ok) {
       if(ok) {
         alert('병원소식이 게시되었습니다!');
         document.getElementById('news-title').value = '';
         document.getElementById('news-content').value = '';
-        [1,2,3,4,5,6].forEach(i => {
-          const el = document.getElementById('news-img'+i);
-          if(el) el.value = '';
-        });
+        newsImgList = [];
+        renderNewsImgPreview();
         loadNewsAdmin();
       }
     });
@@ -1770,9 +1797,50 @@ function loadNewsAdmin() {
   if(!el || !window.loadNewsFromFirestore) return;
   window.loadNewsFromFirestore(function(data) {
     if(!data.length) { el.innerHTML = '<p style="color:#7a94b0;font-size:13px;text-align:center;padding:20px;">등록된 소식 없음</p>'; return; }
-    el.innerHTML = '<div style="font-size:13px;font-weight:700;color:#3d5a73;margin-bottom:8px;">등록된 소식</div><div id="na-wrap"></div>';
-    makeAdminList(document.getElementById('na-wrap'), data, 'news', function(d) {
-      return '<div style="font-size:13px;font-weight:700;color:#1e3448;">'+d.title+'</div><div style="font-size:11px;color:#7a94b0;">'+d.date+'</div>';
+    el.innerHTML = '<div style="font-size:13px;font-weight:700;color:#3d5a73;margin-bottom:8px;">등록된 소식</div>' +
+      data.map(function(d) {
+        var imgs = d.images || [];
+        var thumbs = imgs.map(function(url, ii) {
+          return '<div style="position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:#e8f2fc;">' +
+            '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;">' +
+            '<button data-fid="'+d.firestoreId+'" data-ii="'+ii+'" class="nc-del-img" style="position:absolute;top:2px;right:2px;background:rgba(180,0,0,0.8);color:white;border:none;border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>' +
+          '</div>';
+        }).join('');
+        return '<div style="background:white;border-radius:12px;border:0.5px solid #e0e8f0;padding:12px;margin-bottom:8px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+            '<div><div style="font-size:13px;font-weight:700;color:#1e3448;">'+d.title+'</div><div style="font-size:11px;color:#7a94b0;">'+d.date+'</div></div>' +
+            '<button data-fid="'+d.firestoreId+'" class="nc-del-news" style="background:#fff0f0;border:1px solid #f09595;color:#a32d2d;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">전체삭제</button>' +
+          '</div>' +
+          (imgs.length ? '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">'+thumbs+'</div><div style="font-size:10px;color:#7a94b0;margin-top:4px;">✕ 해당 이미지만 삭제</div>' : '') +
+        '</div>';
+      }).join('');
+
+    // nc-del-img 이벤트 위임
+    el.querySelectorAll('.nc-del-img').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        deleteNewsImg(this.dataset.fid, parseInt(this.dataset.ii));
+      });
+    });
+    el.querySelectorAll('.nc-del-news').forEach(function(btn) {
+      btn.addEventListener('click', function() { deleteItem('news', this.dataset.fid); });
+    });
+  });
+}
+
+function deleteNewsImg(firestoreId, imgIdx) {
+  if(!confirm('이 이미지를 삭제하시겠습니까?')) return;
+  if(!window.loadNewsFromFirestore || !window.db) return;
+  window.loadNewsFromFirestore(function(data) {
+    var news = data.find(function(d){ return d.firestoreId === firestoreId; });
+    if(!news) return;
+    var imgs = (news.images || []).slice();
+    imgs.splice(imgIdx, 1);
+    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js').then(function(m) {
+      m.updateDoc(m.doc(window.db, 'news', firestoreId), { images: imgs }).then(function() {
+        alert('이미지가 삭제되었습니다.');
+        loadNewsAdmin();
+      });
     });
   });
 }
@@ -2061,47 +2129,78 @@ function renderNews() {
     }
     el.innerHTML = data.map(function(n, ni) {
       var imgs = (n.images && n.images.length) ? n.images : (n.imageUrl ? [n.imageUrl] : []);
-      var imgHtml = '';
+      var carouselHtml = '';
       if(imgs.length === 1) {
-        imgHtml = '<img src="'+imgs[0]+'" style="width:100%;display:block;max-height:260px;object-fit:cover;">';
+        carouselHtml = '<img src="'+imgs[0]+'" style="width:100%;display:block;max-height:280px;object-fit:cover;cursor:zoom-in;" onclick="openViewer(this.src)">';
       } else if(imgs.length > 1) {
-        var bigId = 'bigimg_' + ni;
-        var cols = imgs.length <= 3 ? imgs.length : 3;
-        var thumbs = imgs.map(function(url, ii) {
-          return '<div class="news-thumb" data-src="'+url+'" data-big="'+bigId+'" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#e8f2fc;border:'+(ii===0?'2px solid #1a6eb5':'2px solid transparent')+';">' +
-            '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;">' +
-            '</div>';
+        var cid = 'carousel_' + ni;
+        var slides = imgs.map(function(url) {
+          return '<div style="min-width:100%;"><img src="'+url+'" style="width:100%;height:260px;object-fit:cover;display:block;cursor:zoom-in;" onclick="openViewer(this.src)"></div>';
         }).join('');
-        imgHtml = '<div style="padding:12px 12px 4px;">' +
-          '<img id="'+bigId+'" src="'+imgs[0]+'" style="width:100%;border-radius:10px;display:block;max-height:420px;object-fit:contain;background:#f0f5fb;margin-bottom:8px;">' +
-          '<div style="display:grid;grid-template-columns:repeat('+cols+',1fr);gap:6px;">' + thumbs + '</div>' +
+        var dots = imgs.map(function(_, di) {
+          return '<div data-cid="'+cid+'" data-di="'+di+'" class="nc-dot" style="width:'+(di===0?'16px':'6px')+';height:6px;border-radius:3px;background:'+(di===0?'#1a6eb5':'rgba(255,255,255,0.7)')+';cursor:pointer;transition:all 0.2s;"></div>';
+        }).join('');
+        carouselHtml =
+          '<div id="'+cid+'" style="position:relative;overflow:hidden;" data-idx="0" data-total="'+imgs.length+'">' +
+            '<div id="'+cid+'_track" style="display:flex;transition:transform 0.3s ease;">' + slides + '</div>' +
+            '<button data-cid="'+cid+'" data-dir="-1" class="nc-nav" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.88);border:none;border-radius:50%;width:28px;height:28px;font-size:18px;cursor:pointer;color:#3d5a73;display:flex;align-items:center;justify-content:center;padding:0;">&#8249;</button>' +
+            '<button data-cid="'+cid+'" data-dir="1" class="nc-nav" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.88);border:none;border-radius:50%;width:28px;height:28px;font-size:18px;cursor:pointer;color:#3d5a73;display:flex;align-items:center;justify-content:center;padding:0;">&#8250;</button>' +
+            '<div id="'+cid+'_count" style="position:absolute;top:8px;right:10px;background:rgba(0,0,0,0.5);color:white;font-size:11px;padding:2px 7px;border-radius:10px;">1 / '+imgs.length+'</div>' +
+            '<div id="'+cid+'_dots" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;align-items:center;">' + dots + '</div>' +
           '</div>';
       }
       return '<div style="background:white;border-radius:14px;border:0.5px solid #e0e8f0;overflow:hidden;margin-bottom:12px;">' +
-        imgHtml +
+        carouselHtml +
         '<div style="padding:12px 16px 14px;">' +
-        '<div style="font-size:11px;color:#7a94b0;margin-bottom:6px;">' + n.date + '</div>' +
-        '<div style="font-size:15px;font-weight:700;color:#1e3448;margin-bottom:8px;">' + n.title + '</div>' +
-        '<div style="font-size:13px;color:#3d5a73;line-height:1.7;">' + n.content + '</div>' +
+        '<div style="font-size:11px;color:#7a94b0;margin-bottom:6px;">'+n.date+'</div>' +
+        '<div style="font-size:15px;font-weight:700;color:#1e3448;margin-bottom:8px;">'+n.title+'</div>' +
+        '<div style="font-size:13px;color:#3d5a73;line-height:1.7;">'+n.content+'</div>' +
         '</div></div>';
     }).join('');
 
-    // 썸네일 클릭 이벤트
-    el.querySelectorAll('.news-thumb').forEach(function(thumb) {
-      thumb.addEventListener('click', function() {
-        var bigId = this.dataset.big;
-        var src = this.dataset.src;
-        var bigImg = document.getElementById(bigId);
-        if(bigImg) bigImg.src = src;
-        var parent = this.parentNode;
-        parent.querySelectorAll('.news-thumb').forEach(function(t) {
-          t.style.border = '2px solid transparent';
-        });
-        this.style.border = '2px solid #1a6eb5';
+    el.querySelectorAll('.nc-nav').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var cid = this.dataset.cid;
+        var dir = parseInt(this.dataset.dir);
+        var wrap = document.getElementById(cid);
+        if(wrap) goCarousel(cid, parseInt(wrap.dataset.idx) + dir);
+      });
+    });
+    el.querySelectorAll('.nc-dot').forEach(function(dot) {
+      dot.addEventListener('click', function(e) {
+        e.stopPropagation();
+        goCarousel(this.dataset.cid, parseInt(this.dataset.di));
       });
     });
   });
 }
+
+function goCarousel(cid, idx) {
+  var wrap = document.getElementById(cid);
+  if(!wrap) return;
+  var total = parseInt(wrap.dataset.total);
+  idx = Math.max(0, Math.min(idx, total-1));
+  wrap.dataset.idx = idx;
+  var track = document.getElementById(cid+'_track');
+  if(track) track.style.transform = 'translateX(-' + (idx*100) + '%)';
+  var countEl = document.getElementById(cid+'_count');
+  if(countEl) countEl.textContent = (idx+1) + ' / ' + total;
+  var dotsEl = document.getElementById(cid+'_dots');
+  if(dotsEl) {
+    dotsEl.querySelectorAll('div').forEach(function(d, i) {
+      d.style.width = i===idx ? '16px' : '6px';
+      d.style.background = i===idx ? '#1a6eb5' : 'rgba(255,255,255,0.7)';
+    });
+  }
+}
+
+function moveCarousel(cid, dir) {
+  var wrap = document.getElementById(cid);
+  if(!wrap) return;
+  goCarousel(cid, parseInt(wrap.dataset.idx) + dir);
+}
+
 
 function openMap() {
   showScreen('map');
