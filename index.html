@@ -2644,7 +2644,11 @@ function renderDashboard() {
   if(window.loadFeedbacksFromFirestore) {
     window.loadFeedbacksFromFirestore(function(data) {
       if(data.length > 0) {
-        feedbacks = data;
+        // id 필드 보장: Firestore에 id 없으면 time 또는 firestoreId 활용
+        feedbacks = data.map(function(f) {
+          if(!f.id) f.id = f.time || f.firestoreId;
+          return f;
+        });
         localStorage.setItem('ycFeedbacks', JSON.stringify(feedbacks));
       }
       _renderDashboardUI();
@@ -2753,15 +2757,13 @@ function statusBtn(f, label, icon, bg, color) {
 }
 
 function setStatus(firestoreId, localId, status) {
-  var fb = feedbacks.find(function(f){ return f.id === localId; });
+  // firestoreId 또는 localId로 찾기
+  var fb = feedbacks.find(function(f){ return f.firestoreId === firestoreId || f.id === localId; });
   if(!fb) return;
   fb.status = status;
-  if(firestoreId && window.saveReplyToFirestore) {
-    if(window.saveStatusToFirestore) window.saveStatusToFirestore(firestoreId, status);
-    else if(window.db) {
-      var docRef = window.db ? true : false;
-      if(window.updateFeedbackStatus) window.updateFeedbackStatus(firestoreId, status);
-    }
+  var fid = fb.firestoreId || firestoreId;
+  if(fid && window.updateFeedbackStatus) {
+    window.updateFeedbackStatus(fid, status);
   }
   renderFeedbacks();
   updateMonthStats();
