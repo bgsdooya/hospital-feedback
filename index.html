@@ -1327,7 +1327,7 @@
       <!-- 월별 탭 + 통계 + 목록 -->
       <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;">
         <span>📋 피드백 목록</span>
-        <button onclick="exportCSV()" style="background:#edfaf3;border:1.5px solid #2ecc71;color:#0f6e56;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">⬇ CSV</button>
+        <button onclick="exportCSV()" id="csv-btn" style="background:#edfaf3;border:1.5px solid #2ecc71;color:#0f6e56;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">⬇ CSV 내보내기</button>
       </div>
 
       <!-- 월별 탭 -->
@@ -2884,9 +2884,10 @@ function deleteFeedback(firestoreId, localId) {
 }
 
 function renderMonthStats() {
-  var month = document.getElementById('stat-month').value;
+  var monthEl = document.getElementById('stat-month');
+  var month = monthEl ? monthEl.value : '';
   var box = document.getElementById('month-stats');
-  if(!month || !feedbacks.length) { box.style.display='none'; return; }
+  if(!month || !feedbacks.length) { if(box) box.style.display='none'; return; }
   var list = feedbacks.filter(function(f){
     var d = new Date(f.time);
     var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
@@ -2909,7 +2910,7 @@ function renderMonthStats() {
 }
 
 function exportCSV() {
-  var month = document.getElementById('stat-month').value;
+  var month = currentMonth || '';
   var list = month ? feedbacks.filter(function(f){
     var d = new Date(f.time);
     var m = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
@@ -3120,3 +3121,4 @@ console.log("Firebase 초기화 완료");
 </script>
 </body>
 </html>
+  
