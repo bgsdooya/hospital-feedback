@@ -722,9 +722,9 @@
        화면: 병원소식
   ══════════════════════════════════ -->
   <div id="screen-news" class="screen">
-    <div class="content no-tabbar">
+    <div class="content no-tabbar" style="padding-bottom:0;">
       <div id="news-list"><div class="empty-state"><div class="empty-icon">📭</div><p>등록된 소식이 없습니다</p></div></div>
-      <button class="btn-secondary" onclick="history.back()" style="margin:16px 0 0;">← 뒤로가기</button>
+      <button class="btn-secondary" onclick="history.back()" style="margin:16px 0 24px;display:block;">← 뒤로가기</button>
     </div>
   </div>
 
@@ -1943,7 +1943,6 @@ function openImgViewer(src) {
 
   btn.onclick = function(){
     window.removeEventListener('popstate', onPopState);
-    history.back();
     ov.remove();
   };
 
@@ -2131,11 +2130,11 @@ function renderNews() {
       var imgs = (n.images && n.images.length) ? n.images : (n.imageUrl ? [n.imageUrl] : []);
       var carouselHtml = '';
       if(imgs.length === 1) {
-        carouselHtml = '<img src="'+imgs[0]+'" style="width:100%;display:block;max-height:280px;object-fit:cover;cursor:zoom-in;" onclick="openViewer(this.src)">';
+        carouselHtml = '<img src="'+imgs[0]+'" style="width:100%;display:block;max-height:500px;object-fit:contain;cursor:zoom-in;background:#f0f5fb;" onclick="openViewer(this.src)">';
       } else if(imgs.length > 1) {
         var cid = 'carousel_' + ni;
         var slides = imgs.map(function(url) {
-          return '<div style="min-width:100%;background:#f0f5fb;"><img src="'+url+'" style="width:100%;max-height:360px;object-fit:contain;display:block;cursor:zoom-in;" onclick="openViewer(this.src)"></div>';
+          return '<div style="min-width:100%;background:#f0f5fb;"><img src="'+url+'" style="width:100%;max-height:500px;object-fit:contain;display:block;cursor:zoom-in;" onclick="openViewer(this.src)"></div>';
         }).join('');
         var dots = imgs.map(function(_, di) {
           return '<div data-cid="'+cid+'" data-di="'+di+'" class="nc-dot" style="width:'+(di===0?'16px':'6px')+';height:6px;border-radius:3px;background:'+(di===0?'#1a6eb5':'rgba(255,255,255,0.7)')+';cursor:pointer;transition:all 0.2s;"></div>';
