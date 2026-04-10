@@ -2562,18 +2562,29 @@ function makeContactItem(c) {
 
   var btn = '';
   if(c.num2) {
-    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞 ' + c.num + '</a>' +
-          '<br><a class="call-btn" href="tel:' + numClean(c.num2) + '" ' + BTNSTYLE + ' style="margin-top:4px;">📞 ' + c.num2 + '</a>';
+    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞</a>' +
+          ' <a class="call-btn" href="tel:' + numClean(c.num2) + '" ' + BTNSTYLE + '>📞</a>';
   } else if(c.num) {
-    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞 전화</a>';
+    btn = '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞</a>';
   }
 
+  var numCell, btnCell;
+  if(c.num2) {
+    numCell = '<td ' + TD2 + '>' + c.num + '<br>' + c.num2 + '</td>';
+    btnCell = '<td ' + TD3 + '>' +
+      '<a class="call-btn" href="tel:' + numClean(c.num) + '" ' + BTNSTYLE + '>📞</a><br>' +
+      '<a class="call-btn" href="tel:' + numClean(c.num2) + '" ' + BTNSTYLE + ' style="margin-top:8px;display:inline-block;">📞</a>' +
+    '</td>';
+  } else {
+    numCell = '<td ' + TD2 + '>' + (c.num || '') + '</td>';
+    btnCell = '<td ' + TD3 + '>' + btn + '</td>';
+  }
   return '<tr ' + ROW + '>' +
     '<td ' + TD1 + '>' + c.dept +
       (c.spec ? '<br><span style="font-size:12px;font-weight:400;color:var(--accent);white-space:nowrap;display:block;">' + c.spec + '</span>' + (c.doc ? '<span style="font-size:12px;font-weight:600;color:var(--accent);white-space:nowrap;display:block;">' + c.doc + '</span>' : '') : '') +
     '</td>' +
-    '<td ' + TD2 + '>' + (c.num ? c.num + (c.num2 ? '<br>' + c.num2 : '') : '') + '</td>' +
-    '<td ' + TD3 + '>' + btn + '</td>' +
+    numCell +
+    btnCell +
     '</tr>';
 }
 
