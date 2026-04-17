@@ -259,11 +259,11 @@
   .contact-info .dept { font-size:16px; font-weight:600; color:var(--text); }
   .contact-info .num { font-size:14px; color:var(--gray-500); margin-top:3px; }
   .call-btn {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color:white; border:none; border-radius:10px; padding:10px 18px;
-    font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center;
-    gap:5px; font-family:'Noto Sans KR',sans-serif; white-space:nowrap;
-    box-shadow:0 3px 10px rgba(26,110,181,0.3); text-decoration:none;
+    background: white;
+    color:#1a6eb5; border:1.5px solid #1a6eb5; border-radius:7px; padding:5px 10px;
+    font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center;
+    gap:4px; font-family:'Noto Sans KR',sans-serif; white-space:nowrap;
+    text-decoration:none;
   }
 
   /* ── 관리자 화면 ── */
@@ -1480,6 +1480,8 @@ const CONTACTS = [
   { dept:'3내과외래', spec:'내과 전문의', doc:'최병진', num:'055-912-2064', floor:'4F' },
   { dept:'7내과외래', spec:'내과 전문의', doc:'김승현', num:'055-912-2179', floor:'4F' },
   { dept:'원무과', num:'055-912-2025', num2:'055-912-2024', floor:'4F' },
+  { dept:'산재담당자', num:'055-912-2027', floor:'4F' },
+  { dept:'자동차사고담당자', num:'055-912-2026', floor:'4F' },
   { dept:'진료협력팀(상담실)', num:'055-912-2007', floor:'4F' },
   { dept:'영상의학팀(X-RAY·CT·MRI)', num:'055-912-2019', floor:'4F' },
   { dept:'진단검사팀(채혈실)', num:'055-912-2055', floor:'4F' },
@@ -2560,7 +2562,7 @@ function makeContactItem(c) {
   var TD1 = 'style="padding:7px 8px;font-size:13px;font-weight:700;color:var(--text);vertical-align:middle;width:55%;"';
   var TD2 = 'style="padding:7px 8px;font-size:12px;color:var(--gray-500);vertical-align:middle;width:30%;"';
   var TD3 = 'style="padding:7px 6px;text-align:right;vertical-align:middle;white-space:nowrap;width:15%;"';
-  var BTNSTYLE = 'style="background:var(--primary);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;"';
+  var BTNSTYLE = 'style="background:white;color:#1a6eb5;border:1.5px solid #1a6eb5;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;"';
 
   var btn = '';
   if(c.num2) {
