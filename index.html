@@ -1811,30 +1811,67 @@ function loadNewsAdmin() {
     el.innerHTML = '<div style="font-size:13px;font-weight:700;color:#3d5a73;margin-bottom:8px;">등록된 소식</div>' +
       data.map(function(d) {
         var imgs = d.images || [];
+        var cnt = imgs.length;
         var thumbs = imgs.map(function(url, ii) {
           return '<div style="position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:#e8f2fc;">' +
             '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover;">' +
             '<button data-fid="'+d.firestoreId+'" data-ii="'+ii+'" class="nc-del-img" style="position:absolute;top:2px;right:2px;background:rgba(180,0,0,0.8);color:white;border:none;border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>' +
           '</div>';
         }).join('');
+        // 이미지 추가 입력창 (10장 미만일 때만)
+        var addRow = cnt < 10 ?
+          '<div style="display:flex;gap:6px;margin-top:8px;">' +
+            '<input type="url" id="add-img-'+d.firestoreId+'" placeholder="추가할 이미지 URL" style="flex:1;padding:7px 10px;border:1.5px solid #d1dce8;border-radius:8px;font-size:12px;font-family:inherit;">' +
+            '<button data-fid="'+d.firestoreId+'" class="nc-add-img" style="background:#1a6eb5;color:white;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">+ 추가</button>' +
+          '</div>' +
+          '<div style="font-size:10px;color:#7a94b0;margin-top:3px;">' + cnt + ' / 10장</div>'
+        : '<div style="font-size:10px;color:#e74c3c;margin-top:4px;">최대 10장 도달</div>';
+
         return '<div style="background:white;border-radius:12px;border:0.5px solid #e0e8f0;padding:12px;margin-bottom:8px;">' +
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
             '<div><div style="font-size:13px;font-weight:700;color:#1e3448;">'+d.title+'</div><div style="font-size:11px;color:#7a94b0;">'+d.date+'</div></div>' +
             '<button data-fid="'+d.firestoreId+'" class="nc-del-news" style="background:#fff0f0;border:1px solid #f09595;color:#a32d2d;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;">전체삭제</button>' +
           '</div>' +
-          (imgs.length ? '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">'+thumbs+'</div><div style="font-size:10px;color:#7a94b0;margin-top:4px;">✕ 해당 이미지만 삭제</div>' : '') +
+          (cnt ? '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">'+thumbs+'</div>' : '') +
+          addRow +
         '</div>';
       }).join('');
 
-    // nc-del-img 이벤트 위임
+    // nc-del-img 이벤트
     el.querySelectorAll('.nc-del-img').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         deleteNewsImg(this.dataset.fid, parseInt(this.dataset.ii));
       });
     });
+    // nc-del-news 이벤트
     el.querySelectorAll('.nc-del-news').forEach(function(btn) {
       btn.addEventListener('click', function() { deleteItem('news', this.dataset.fid); });
+    });
+    // nc-add-img 이벤트
+    el.querySelectorAll('.nc-add-img').forEach(function(btn) {
+      btn.addEventListener('click', function() { addNewsImgToExisting(this.dataset.fid); });
+    });
+  });
+}
+
+function addNewsImgToExisting(firestoreId) {
+  var input = document.getElementById('add-img-' + firestoreId);
+  if(!input) return;
+  var url = input.value.trim();
+  if(!url) { alert('URL을 입력해주세요'); return; }
+  if(!window.loadNewsFromFirestore || !window.db) return;
+  window.loadNewsFromFirestore(function(data) {
+    var news = data.find(function(d){ return d.firestoreId === firestoreId; });
+    if(!news) return;
+    var imgs = (news.images || []).slice();
+    if(imgs.length >= 10) { alert('최대 10장까지만 추가 가능합니다'); return; }
+    imgs.push(url);
+    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js').then(function(m) {
+      m.updateDoc(m.doc(window.db, 'news', firestoreId), { images: imgs }).then(function() {
+        alert('이미지가 추가되었습니다!');
+        loadNewsAdmin();
+      });
     });
   });
 }
