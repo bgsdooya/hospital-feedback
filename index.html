@@ -1860,18 +1860,18 @@ function addNewsImgToExisting(firestoreId) {
   if(!input) return;
   var url = input.value.trim();
   if(!url) { alert('URL을 입력해주세요'); return; }
-  if(!window.loadNewsFromFirestore || !window.db) return;
-  window.loadNewsFromFirestore(function(data) {
-    var news = data.find(function(d){ return d.firestoreId === firestoreId; });
-    if(!news) return;
-    var imgs = (news.images || []).slice();
-    if(imgs.length >= 10) { alert('최대 10장까지만 추가 가능합니다'); return; }
-    imgs.push(url);
-    import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js').then(function(m) {
-      m.updateDoc(m.doc(window.db, 'news', firestoreId), { images: imgs }).then(function() {
+  if(!window.db) { alert('데이터베이스 연결 오류'); return; }
+  import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js').then(function(m) {
+    var docRef = m.doc(window.db, 'news', firestoreId);
+    m.getDoc(docRef).then(function(snap) {
+      if(!snap.exists()) { alert('게시물을 찾을 수 없습니다'); return; }
+      var imgs = (snap.data().images || []).slice();
+      if(imgs.length >= 10) { alert('최대 10장까지만 추가 가능합니다'); return; }
+      imgs.push(url);
+      m.updateDoc(docRef, { images: imgs }).then(function() {
         alert('이미지가 추가되었습니다!');
         loadNewsAdmin();
-      });
+      }).catch(function(e) { alert('저장 실패: ' + e.message); });
     });
   });
 }
