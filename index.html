@@ -3095,6 +3095,7 @@ const firebaseConfig= {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+  window.db = db;
 
 // 피드백 저장 (Firestore)
 window.saveFeedbackToFirestore = async function(fb) {
