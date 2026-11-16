@@ -474,6 +474,8 @@
     box-shadow:0 -3px 14px rgba(0,0,0,0.20);
   }
   .sticky-cta:active{ background:linear-gradient(135deg,#145a95,#2679b8); }
+  .sticky-cta{ transition:transform .25s ease, opacity .25s ease; }
+  .sticky-cta.cta-hidden{ transform:translateY(100%); opacity:0; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -495,61 +497,63 @@
       </div>
 
       <!-- 🏥 병원 안내 -->
-      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:4px 0 8px;letter-spacing:0.5px;">🏥 병원 안내</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
-        <button onclick="showTab('about')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:2px 0 5px;letter-spacing:0.5px;">🏥 병원 안내</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;">
+        <button onclick="showTab('about')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">🏥</span><span style="font-size:14px;font-weight:700;color:#1a6eb5;line-height:1.3;">병원<br>소개</span>
         </button>
-        <button onclick="window.open('https://yangsancheilhospital.com/001/sub01_07.php','_blank')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="window.open('https://yangsancheilhospital.com/001/sub01_07.php','_blank')" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">👨‍⚕️</span><span style="font-size:14px;font-weight:700;color:#1a6eb5;line-height:1.3;">의료진<br>소개</span>
         </button>
-        <button onclick="openMap()" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="openMap()" style="background:linear-gradient(135deg,#e8f2fc,#d0e4f7);border:1.5px solid #b5d4f4;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">📍</span><span style="font-size:14px;font-weight:700;color:#1a6eb5;line-height:1.3;">찾아<br>오는길</span>
         </button>
       </div>
 
       <!-- 📋 진료 정보 -->
-      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">📋 진료 정보</div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px;">
-        <button onclick="showTab('schedule')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 5px;letter-spacing:0.5px;">📋 진료 정보</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:7px;">
+        <button onclick="showTab('schedule')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">📅</span><span style="font-size:14px;font-weight:700;color:#3d5a73;line-height:1.4;">이달의<br>진료표</span>
         </button>
-        <button onclick="showTab('meal')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="showTab('meal')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">🍱</span><span style="font-size:14px;font-weight:700;color:#3d5a73;line-height:1.4;">입원<br>식단표</span>
         </button>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
-        <button onclick="showTab('certificate')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px;">
+        <button onclick="showTab('certificate')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">📋</span><span style="font-size:14px;font-weight:700;color:#3d5a73;line-height:1.4;">증명서<br>발급안내</span>
         </button>
-        <button onclick="showTab('faq')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="showTab('faq')" style="background:white;border:1.5px solid #e0e8f0;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">❓</span><span style="font-size:14px;font-weight:700;color:#3d5a73;line-height:1.4;">자주 묻는<br>질문</span>
         </button>
       </div>
 
       <!-- 📢 소식 & 서비스 -->
-      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 8px;letter-spacing:0.5px;">📢 소식 & 서비스</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
-        <button onclick="showTab('news')" style="background:linear-gradient(135deg,#fffdf7,#fef8ec);border:1.5px solid #f0d98a;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+      <div style="font-size:13px;font-weight:700;color:#7a94b0;margin:0 0 5px;letter-spacing:0.5px;">📢 소식 & 서비스</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;">
+        <button onclick="showTab('news')" style="background:linear-gradient(135deg,#fffdf7,#fef8ec);border:1.5px solid #f0d98a;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">📢</span><span style="font-size:14px;font-weight:700;color:#854f0b;line-height:1.3;">병원<br>소식</span>
         </button>
-        <button onclick="showTab('press')" style="background:linear-gradient(135deg,#eef4fb,#deeaf7);border:1.5px solid #c0d8f0;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="showTab('press')" style="background:linear-gradient(135deg,#eef4fb,#deeaf7);border:1.5px solid #c0d8f0;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">📰</span><span style="font-size:14px;font-weight:700;color:#2e6da4;line-height:1.3;">언론<br>보도</span>
         </button>
-        <button onclick="showTab('smart')" style="background:linear-gradient(135deg,#d6ecf8,#bfe0f5);border:1.5px solid #90c8ed;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        <button onclick="showTab('smart')" style="background:linear-gradient(135deg,#d6ecf8,#bfe0f5);border:1.5px solid #90c8ed;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
           <span style="font-size:14px;">⭐</span><span style="font-size:14px;font-weight:800;color:#1a6eb5;line-height:1.3;">스마트<br>서비스</span>
         </button>
       </div>
 
-      <!-- 설문 안내 + 버튼 통합 -->
-      <div style="padding:0 0 16px">
-        <button class="btn-primary" onclick="startSurvey()" style="flex-direction:column;height:auto;padding:16px;gap:6px;">
+      <!-- 층별안내 (첫 화면 노출) -->
+      <div style="display:flex;gap:8px;margin-bottom:18px;">
+        <button class="btn-secondary" style="margin:0" onclick="showTab('contact')">📞 층별안내 및 직통전화</button>
+      </div>
+
+      <!-- 설문 안내 배너 (스크롤 하단) -->
+      <div style="padding:0 0 14px">
+        <button id="survey-banner" class="btn-primary" onclick="startSurvey()" style="flex-direction:column;height:auto;padding:16px;gap:6px;">
           <span style="font-size:16px;font-weight:800;">📋 고객의 소리 및 설문 시작하기 →</span>
           <span style="font-size:12px;font-weight:400;opacity:0.85;">약 1분 소요됩니다 · 소중한 의견은 더 나은 서비스 개선에 활용됩니다</span>
         </button>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn-secondary" style="margin:0" onclick="showTab('contact')">📞 층별안내 및 직통전화</button>
-        </div>
       </div>
 
       <!-- 글자 크기 -->
@@ -3272,6 +3276,23 @@ window.deleteFromFirestore = async function(collectionName, firestoreId) {
 
 console.log("Firebase 초기화 완료");
 
+</script>
+<script>
+// 큰 설문 배너가 화면에 들어오면 하단 고정 바 숨김 (중복 노출 방지)
+(function(){
+  function init(){
+    try{
+      var banner=document.getElementById('survey-banner');
+      var bar=document.querySelector('.sticky-cta');
+      if(!banner||!bar||!('IntersectionObserver' in window)) return;
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){ bar.classList.toggle('cta-hidden', e.isIntersecting); });
+      },{threshold:0.9, rootMargin:'0px 0px -64px 0px'}).observe(banner);
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
 </script>
 </body>
 </html>
