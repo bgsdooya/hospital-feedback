@@ -584,6 +584,9 @@
        화면 2: 설문
   ══════════════════════════════════ -->
   <div id="screen-survey" class="screen">
+    <div style="background:#fff;padding:8px 16px;border-bottom:1px solid #e8eef5;">
+      <button onclick="showTab('home')" style="background:none;border:none;padding:4px 0;color:#5f7a93;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">← 병원 안내 홈 보기</button>
+    </div>
     <div class="survey-progress">
       <div class="progress-info">
         <span id="step-label">1 / 5단계</span>
@@ -2615,6 +2618,7 @@ function submitSurvey() {
     overall: answers.overall || 0,
     respondent: answers.respondent || null,
     free: answers.free || '',
+    source: window.ENTRY_SOURCE || 'direct',
     replied: false,
     reply: ''
   };
@@ -2982,6 +2986,7 @@ function renderFeedbacks() {
       (positives.length ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">👍 ' + positives.join(' · ') + '</div><br>' : '') +
       (f.kind_staff && (f.kind_staff.dept || f.kind_staff.name) ? '<div style="' + badgeStyle + 'background:#edfaf3;color:#0f6e56;">🏆 ' + (f.kind_staff.dept||'') + ' ' + (f.kind_staff.name||'') + (f.kind_staff.kindReasons && f.kind_staff.kindReasons.length ? ' · ' + f.kind_staff.kindReasons.join(', ') : '') + '</div><br>' : '') +
       (f.respondent && f.respondent.name ? '<div style="background:#e8f2fc;border-radius:8px;padding:5px 10px;margin-bottom:8px;font-size:12px;color:#185fa5;font-weight:500;">👤 ' + (f.respondent.name||'') + '</div>' : '') +
+      (f.source === 'box' ? '<div style="display:inline-block;background:#edfaf3;border:1px solid #bfe3d2;border-radius:6px;padding:2px 8px;margin-bottom:8px;font-size:11px;color:#0f6e56;font-weight:600;">📮 소리함 QR</div>' : '') +
       (negatives.length ? '<div style="' + badgeStyle + 'background:#fef0ee;color:#a32d2d;">⚠️ ' + negatives.join(' · ') + '</div><br>' : '') +
       (f.free ? '<div style="font-size:13px;color:#3d5a73;line-height:1.6;border-left:2px solid #d1dce8;padding-left:10px;margin-bottom:8px;font-style:italic;">"' + f.free + '"</div>' : '') +
       '<div style="display:flex;gap:6px;">' +
@@ -3074,7 +3079,7 @@ function exportCSV() {
     return m === month;
   }) : feedbacks;
   if(!list.length) { alert('데이터가 없습니다.'); return; }
-  var rows = [['날짜','평점','만족유형','친절직원','불만사항','자유의견','상태','성함']];
+  var rows = [['날짜','평점','만족유형','친절직원','불만사항','자유의견','상태','성함','유입경로']];
   var timeStr = function(t){ var d=new Date(t); return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); };
   list.forEach(function(f){
     var ps = Array.isArray(f.positive)?f.positive:(f.positive?[f.positive]:[]);
@@ -3087,7 +3092,8 @@ function exportCSV() {
       ng.join('|'),
       (f.free||'').replace(/,/g,' '),
       f.status||'미처리',
-      f.respondent?f.respondent.name||'':''
+      f.respondent?f.respondent.name||'':'',
+      f.source==='box'?'소리함 QR':(f.source&&f.source!=='direct'?f.source:'직접접속')
     ]);
   });
   var csv = '\uFEFF' + rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
@@ -3278,6 +3284,22 @@ console.log("Firebase 초기화 완료");
 
 </script>
 <script>
+// ── QR 유입 처리: ?s=1 설문 자동 시작 / ?from=xxx 유입경로 기록 ──
+window.ENTRY_SOURCE = '';
+(function(){
+  try{
+    var q=new URLSearchParams(location.search);
+    var from=(q.get('from')||'').slice(0,20).replace(/[^a-zA-Z0-9_-]/g,'');
+    if(from){ window.ENTRY_SOURCE=from; try{sessionStorage.setItem('entrySource',from);}catch(e){} }
+    else { try{ window.ENTRY_SOURCE=sessionStorage.getItem('entrySource')||''; }catch(e){} }
+    if(q.get('s')==='1'){
+      var go=function(){ if(typeof startSurvey==='function') startSurvey(); else setTimeout(go,120); };
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(go,60);});
+      else setTimeout(go,60);
+    }
+  }catch(e){}
+})();
+
 // 큰 설문 배너가 화면에 들어오면 하단 고정 바 숨김 (중복 노출 방지)
 (function(){
   function init(){
